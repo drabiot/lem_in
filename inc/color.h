@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.hpp                                          :+:      :+:    :+:   */
+/*   color.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:47:55 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/10 13:47:58 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/10 14:13:20 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COLOR_HPP
-# define COLOR_HPP
+#ifndef COLOR_H
+# define COLOR_H
 
 # define BASE_COLOR	"\033[0m"
 # define GRAY 		"\033[0;90m"
@@ -23,4 +23,4 @@
 # define CYAN 		"\033[0;96m"
 # define WHITE		"\033[0;97m"
 
-#endif //COLOR_HPP
+#endif //COLOR_H
