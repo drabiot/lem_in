@@ -6,11 +6,14 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/10 13:54:17 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/10 15:08:42 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "lem_in.h"
+
 int	main(void)
 {
+	parseData();
 	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/03/10 13:49:18 by tchartie         ###   ########.fr        #
+#    Updated: 2026/03/10 14:59:40 by tchartie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,10 @@ WHITE			=	\033[0;97m
 #========== SOURCES ===========#
 
 SRC_DIR 		= 	src/
-SRC_NAME 		=	main.c
+SRC_NAME 		=	main.c \
+					parser.c \
+					gnl/get_next_line.c \
+					gnl/get_next_line_utils.c
 
 OBJ_DIR 		=	obj/
 OBJ_NAME		=	$(SRC_NAME:.c=.o)
