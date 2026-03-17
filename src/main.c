@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/10 16:19:10 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/17 14:03:36 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,8 @@ int	main(void)
 	farm = (t_AntFarm){0};
 	if (!parseData(&farm))
 		perror("ERROR");
+
+	printf("%s\n", farm.nbAnt);
+
 	return (0);
 }
