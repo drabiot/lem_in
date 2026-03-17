@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:46:28 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/17 14:14:24 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/17 14:40:21 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,11 @@ typedef struct	s_AntFarm
 }			t_AntFarm;
 
 # define INIT		0
-# define NOT_TYPE	1
+# define NO_TYPE	1
 # define START		2
 # define END		3
+# define COMMENT	4
+# define ERROR		5
 
 bool	parseData(t_AntFarm *farm);
 
