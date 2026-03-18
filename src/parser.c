@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 15:26:58 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 15:49:06 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	addRoomToFarm(t_AntFarm *farm, t_room *room)
 
 int	defineType(char *data)
 {
-	if (!data)
+	if (!data || !data[0] || data[0] == 'L')
 		return (ERROR);
 	if (data[0] == '#' && data[1] == '#')
 	{

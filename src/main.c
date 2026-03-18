@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 15:09:30 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 15:50:31 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ int	main(void)
 		return (1);
 	farm.room[0] = NULL;
 	if (!parseData(&farm))
+		perror("ERROR");
+	if (!farm.start || !farm.end)
 		perror("ERROR");
 
 	//DEBUG
