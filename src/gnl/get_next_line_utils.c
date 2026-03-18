@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 14:08:29 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/10 15:26:52 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 13:37:24 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,29 +102,6 @@ char	*ft_strcat(char *s1, char *s2, char *array)
 	}
 	array[j + i] = '\0';
 	return (array);
-}
-/*
- * Return a duplicate string of the given string
- */
-
-char	*ft_strdup(const char *src)
-{
-	int		i;
-	char	*dest;
-
-	i = 0;
-	dest = (char *)malloc(sizeof(char) * (ft_strlen(src) + 1));
-	if (dest)
-	{
-		while (src[i])
-		{
-			dest[i] = src[i];
-			i++;
-		}
-		dest[i] = '\0';
-		return (dest);
-	}
-	return (NULL);
 }
 
 /*

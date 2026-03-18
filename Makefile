@@ -6,7 +6,7 @@
 #    By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/03/10 14:59:40 by tchartie         ###   ########.fr        #
+#    Updated: 2026/03/18 13:38:12 by tchartie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,7 @@ WHITE			=	\033[0;97m
 SRC_DIR 		= 	src/
 SRC_NAME 		=	main.c \
 					parser.c \
+					utils.c \
 					gnl/get_next_line.c \
 					gnl/get_next_line_utils.c
 

@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 14:08:37 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/10 15:26:49 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 13:37:36 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,13 +91,6 @@ char	*ft_strcpy(char *dst, const char *src, int check_nl);
 /* ****************************************** */
 
 char	*ft_strcat(char *s1, char *s2, char *array);
-
-/* ****************************************** */
-/*                 ft_strdup                  */
-/*   Return a duplicate str of the given str  */
-/* ****************************************** */
-
-char	*ft_strdup(const char *src);
 
 /* ****************************************** */
 /*                 ft_strlen                  */

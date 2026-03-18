@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:46:28 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/17 14:40:21 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 13:39:17 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define LEM_IN_H
 
 # include "color.h"
+# include <stdlib.h>
 # include <stdbool.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -45,5 +46,7 @@ typedef struct	s_AntFarm
 # define ERROR		5
 
 bool	parseData(t_AntFarm *farm);
+char	*ft_strdup(const char *src);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 #endif //LEM_IN_H
