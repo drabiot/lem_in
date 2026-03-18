@@ -6,12 +6,75 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 13:36:32 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 14:42:42 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include "get_next_line.h"
+
+static void	freeSplit(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		++i;
+	}
+	free(split);
+}
+
+t_room	*createRoom(char *data)
+{
+	t_room	*room;
+	char	**split;
+
+	room = malloc(sizeof(t_room));
+	if (!room)
+		return (NULL);
+	split = ft_split(data, ' ');
+	if (!split || !split[0] || !split[1] || !split[2] || split[3])
+	{
+		free(room);
+		freeSplit(split);
+		return (NULL);
+	}
+	room->ID = ft_strdup(split[0]);
+	//check if split[1] && split[2] isnum
+	room->posX = ft_atoi(split[1]);
+	room->posY = ft_atoi(split[2]);
+	room->IDAnts = 0;
+	room->neighbours = NULL;
+	room->nbNeighbours = 0;
+	room->isUsed = false;
+	freeSplit(split);
+	return (room);
+}
+
+void	addRoomToFarm(t_AntFarm *farm, t_room *room)
+{
+	t_room	**new;
+	int		i;
+
+	i = 0;
+	while (farm->room[i])
+		i++;
+	new = malloc(sizeof(t_room *) * (i + 2));
+	if (!new)
+		return ;
+	i = 0;
+	while (farm->room[i])
+	{
+		new[i] = farm->room[i];
+		i++;
+	}
+	new[i] = room;
+	new[i + 1] = NULL;
+	free(farm->room);
+	farm->room = new;
+}
 
 int	defineType(char *data)
 {
@@ -27,12 +90,15 @@ int	defineType(char *data)
 		if (ft_strncmp(after, "end", 4) == 0)
 			return (END);
 	}
+	else if (data[0] == '#')
+		return (COMMENT);
 	return (NO_TYPE);
 }
 
 void	transferData(t_AntFarm *farm, char *data)
 {
 	static int	type = INIT;
+	t_room		*new_room;
 
 	if (type == INIT)
 	{
@@ -40,13 +106,14 @@ void	transferData(t_AntFarm *farm, char *data)
 		type = NO_TYPE;
 		return;
 	}
-	if (type == START)
+	if (type == START || type == END)
 	{
-		type = NO_TYPE;
-		return;
-	}
-	if (type == END)
-	{
+		new_room = createRoom(data);
+		if (type == START)
+			farm->start = new_room;
+		else
+			farm->end = new_room;
+		addRoomToFarm(farm, new_room);
 		type = NO_TYPE;
 		return;
 	}
@@ -54,7 +121,7 @@ void	transferData(t_AntFarm *farm, char *data)
 	if (type == NO_TYPE)
 		;
 	else if (type == COMMENT)
-		;
+		return;
 	else if (type == ERROR)
 		;
 	else
@@ -81,7 +148,6 @@ void	fetchData(t_AntFarm *farm)
 
 bool	parseData(t_AntFarm *farm)
 {
-	//t_room	*new_room;
 	fetchData(farm);
 	return (true);
 }

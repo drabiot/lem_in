@@ -1,3 +1,4 @@
 lem-in
 obj/
 */*.o
+test.txt
