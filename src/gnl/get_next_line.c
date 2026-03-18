@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tchartie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 14:08:18 by tchartie          #+#    #+#             */
-/*   Updated: 2023/11/20 15:55:44 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 15:28:14 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,11 @@ char	*get_next_line(int fd)
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		free(stash);
+		stash = NULL;
 		return (NULL);
+	}
 	stash = read_buff(fd, stash);
 	line = add_to_line(stash);
 	stash = clean_stash(stash);

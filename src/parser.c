@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 14:42:42 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/18 15:26:58 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,22 @@ static void	freeSplit(char **split)
 	free(split);
 }
 
+static bool	isDigit(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '+' || str[i] == '-')
+		++i;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (false);
+		++i;
+	}
+	return (true);
+}
+
 t_room	*createRoom(char *data)
 {
 	t_room	*room;
@@ -41,8 +57,13 @@ t_room	*createRoom(char *data)
 		freeSplit(split);
 		return (NULL);
 	}
+	if (!isDigit(split[1]) || !isDigit(split[2]))
+	{
+		free(room);
+		freeSplit(split);
+		return (NULL);
+	}
 	room->ID = ft_strdup(split[0]);
-	//check if split[1] && split[2] isnum
 	room->posX = ft_atoi(split[1]);
 	room->posY = ft_atoi(split[2]);
 	room->IDAnts = 0;
@@ -95,7 +116,7 @@ int	defineType(char *data)
 	return (NO_TYPE);
 }
 
-void	transferData(t_AntFarm *farm, char *data)
+bool	transferData(t_AntFarm *farm, char *data)
 {
 	static int	type = INIT;
 	t_room		*new_room;
@@ -104,31 +125,32 @@ void	transferData(t_AntFarm *farm, char *data)
 	{
 		farm->nbAnt = ft_strdup(data);
 		type = NO_TYPE;
-		return;
+		return (true);
 	}
 	if (type == START || type == END)
 	{
 		new_room = createRoom(data);
+		if (!new_room)
+			return (false);
 		if (type == START)
 			farm->start = new_room;
 		else
 			farm->end = new_room;
 		addRoomToFarm(farm, new_room);
 		type = NO_TYPE;
-		return;
+		return (true);
 	}
 	type = defineType(data);
 	if (type == NO_TYPE)
 		;
 	else if (type == COMMENT)
-		return;
+		return (true);
 	else if (type == ERROR)
-		;
-	else
-		;
+		return (false);
+	return (true);
 }
 
-void	fetchData(t_AntFarm *farm)
+bool	fetchData(t_AntFarm *farm)
 {
 	char	*line;
 	size_t	len;
@@ -139,15 +161,22 @@ void	fetchData(t_AntFarm *farm)
 		len = ft_strlen(line);
 		if (len > 0 && line[len - 1] == '\n')
 			line[len - 1] = '\0';
-		transferData(farm, line);
+		if (!transferData(farm, line))
+		{
+			free(line);
+			get_next_line(-1);
+			return (false);
+		}
 		free(line);
 		line = get_next_line(0);
 	}
 	free(line);
+	return (true);
 }
 
 bool	parseData(t_AntFarm *farm)
 {
-	fetchData(farm);
+	if (!fetchData(farm))
+		return (false);
 	return (true);
 }
