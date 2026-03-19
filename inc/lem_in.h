@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:46:28 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 13:02:59 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:47:33 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct	s_AntFarm
 
 bool	parseData(t_AntFarm *farm);
 char	*ft_strdup(const char *src);
-int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_strcmp(const char *s1, const char *s2);
 char	**ft_split(char const *s, char c);
 int		ft_atoi(const char *str);
 

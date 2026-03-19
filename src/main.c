@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 13:14:38 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:50:31 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	main(void)
 
 	while (farm.room[i])
 	{
-		printf("ID Room [%d]: %s\t\t[%d,%d]\n", i, farm.room[i]->ID, farm.room[i]->posX, farm.room[i]->posY);
+		printf("ID Room [%d]: %s\t\t[%d,%d]\tnb Neighbours %d\n", i, farm.room[i]->ID, farm.room[i]->posX, farm.room[i]->posY, farm.room[i]->nbNeighbours);
 		++i;
 	}
 

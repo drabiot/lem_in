@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 13:36:36 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 14:42:50 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:41:59 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*ft_strdup(const char *src)
 	return (NULL);
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t			i;
 	unsigned char	*sent1;
@@ -42,10 +42,8 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	i = 0;
 	sent1 = (void *)s1;
 	sent2 = (void *)s2;
-	while (((sent1[i] || sent2[i]) && (sent1[i] - sent2[i] == 0)) && (n > i))
+	while ((sent1[i] || sent2[i]) && (sent1[i] - sent2[i] == 0))
 		i++;
-	if (n == i)
-		return (0);
 	return (sent1[i] - sent2[i]);
 }
 

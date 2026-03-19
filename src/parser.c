@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 13:22:15 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:52:13 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ t_room	*createRoom(char *data)
 		freeSplit(split);
 		return (NULL);
 	}
+	//Protect duplicated ID
 	room->ID = ft_strdup(split[0]);
 	room->posX = ft_atoi(split[1]);
 	room->posY = ft_atoi(split[2]);
@@ -74,9 +75,12 @@ t_room	*createRoom(char *data)
 	return (room);
 }
 
-/*bool	linkRoom(t_AntFarm *farm, char *data)
+bool	linkRoom(t_AntFarm *farm, char *data)
 {
 	char	**split;
+	int		i;
+	t_room	*roomStart;
+	t_room	*roomEnd;
 
 	split = ft_split(data, '-');
 	if (!split || !split[0] || !split[1])
@@ -84,8 +88,22 @@ t_room	*createRoom(char *data)
 		freeSplit(split);
 		return (false);
 	}
-	
-}*/
+	i = 0;
+	while (farm->room[i])
+	{
+		if (!ft_strcmp(farm->room[i]->ID, split[0]))
+			roomStart = farm->room[i];
+		if (!ft_strcmp(farm->room[i]->ID, split[1]))
+			roomEnd = farm->room[i];
+		++i;
+	}
+	roomStart->nbNeighbours++;
+	roomEnd->nbNeighbours++;
+	roomStart->neighbours = &roomEnd;
+	roomEnd->neighbours = &roomStart;
+	freeSplit(split);
+	return (true);
+}
 
 void	addRoomToFarm(t_AntFarm *farm, t_room *room)
 {
@@ -119,9 +137,9 @@ int	defineType(char *data)
 		char *after = data + 2;
 		while (*after == ' ' || *after == '\t')
 			after++;
-		if (ft_strncmp(after, "start", 6) == 0)
+		if (ft_strcmp(after, "start") == 0)
 			return (START);
-		if (ft_strncmp(after, "end", 4) == 0)
+		if (ft_strcmp(after, "end") == 0)
 			return (END);
 	}
 	else if (data[0] == '#')
@@ -188,7 +206,7 @@ bool	transferData(t_AntFarm *farm, char *data)
 			addRoomToFarm(farm, new_room);
 		}
 		if (defType == LINK)
-			;
+			linkRoom(farm, data);
 		return (true);
 	}
 	else if (type == COMMENT)
