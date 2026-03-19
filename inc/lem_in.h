@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:46:28 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 14:43:13 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:02:59 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ typedef struct	s_AntFarm
 # define END		3
 # define COMMENT	4
 # define ERROR		5
+
+# define ROOM		0
+# define LINK		1
 
 bool	parseData(t_AntFarm *farm);
 char	*ft_strdup(const char *src);

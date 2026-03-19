@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 15:49:06 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:22:15 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,19 @@ t_room	*createRoom(char *data)
 	return (room);
 }
 
+/*bool	linkRoom(t_AntFarm *farm, char *data)
+{
+	char	**split;
+
+	split = ft_split(data, '-');
+	if (!split || !split[0] || !split[1])
+	{
+		freeSplit(split);
+		return (false);
+	}
+	
+}*/
+
 void	addRoomToFarm(t_AntFarm *farm, t_room *room)
 {
 	t_room	**new;
@@ -116,9 +129,32 @@ int	defineType(char *data)
 	return (NO_TYPE);
 }
 
+int	checkType(char *data)
+{
+	char	**split;
+
+	split = ft_split(data, ' ');
+	if (!split)
+	{
+		freeSplit(split);
+		return (ERROR);
+	}
+	if (split[0] && !split[1])
+	{
+		freeSplit(split);
+		return (LINK);
+	}
+	else
+	{
+		freeSplit(split);
+		return (ROOM);
+	}
+}
+
 bool	transferData(t_AntFarm *farm, char *data)
 {
 	static int	type = INIT;
+	static int	defType = INIT;
 	t_room		*new_room;
 
 	if (type == INIT)
@@ -142,7 +178,19 @@ bool	transferData(t_AntFarm *farm, char *data)
 	}
 	type = defineType(data);
 	if (type == NO_TYPE)
-		;
+	{
+		defType = checkType(data);
+		if (defType == ERROR)
+			return (false);
+		if (defType == ROOM)
+		{
+			new_room = createRoom(data);
+			addRoomToFarm(farm, new_room);
+		}
+		if (defType == LINK)
+			;
+		return (true);
+	}
 	else if (type == COMMENT)
 		return (true);
 	else if (type == ERROR)

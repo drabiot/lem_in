@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/18 15:50:31 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:14:38 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,17 @@ int	main(void)
 	if (farm.nbAnt)
 		printf("\nNb Ants: %s\n", farm.nbAnt);
 	if (farm.start)
-		printf("ID Start: %s\t[%d,%d]\n", farm.start->ID, farm.start->posX, farm.start->posY);
+		printf("ID Start: %s\t\t[%d,%d]\n", farm.start->ID, farm.start->posX, farm.start->posY);
 	if (farm.end)
-		printf("ID End: %s\t[%d,%d]\n", farm.end->ID, farm.end->posX, farm.end->posY);
+		printf("ID End: %s\t\t[%d,%d]\n\n", farm.end->ID, farm.end->posX, farm.end->posY);
+
+	int	i = 0;
+
+	while (farm.room[i])
+	{
+		printf("ID Room [%d]: %s\t\t[%d,%d]\n", i, farm.room[i]->ID, farm.room[i]->posX, farm.room[i]->posY);
+		++i;
+	}
 
 	freeFarm(&farm);
 	return (0);
