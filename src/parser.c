@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 13:52:13 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 14:07:26 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ bool	linkRoom(t_AntFarm *farm, char *data)
 	t_room	*roomEnd;
 
 	split = ft_split(data, '-');
-	if (!split || !split[0] || !split[1])
+	if (!split || !split[0] || !split[1] || split[2])
 	{
 		freeSplit(split);
 		return (false);
@@ -206,7 +206,10 @@ bool	transferData(t_AntFarm *farm, char *data)
 			addRoomToFarm(farm, new_room);
 		}
 		if (defType == LINK)
-			linkRoom(farm, data);
+		{
+			if (!linkRoom(farm, data))
+				return (false);
+		}
 		return (true);
 	}
 	else if (type == COMMENT)

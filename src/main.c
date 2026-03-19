@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 13:50:31 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 14:13:39 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,12 @@ int	main(void)
 	if (!farm.room)
 		return (1);
 	farm.room[0] = NULL;
-	if (!parseData(&farm))
-		perror("ERROR");
-	if (!farm.start || !farm.end)
-		perror("ERROR");
+	if (!parseData(&farm) || !farm.start || !farm.end)
+	{
+		perror(RED"ERROR"BASE_COLOR);
+		freeFarm(&farm);
+		return (1);
+	}
 
 	//DEBUG
 	if (farm.nbAnt)
@@ -56,6 +58,12 @@ int	main(void)
 		printf("ID Room [%d]: %s\t\t[%d,%d]\tnb Neighbours %d\n", i, farm.room[i]->ID, farm.room[i]->posX, farm.room[i]->posY, farm.room[i]->nbNeighbours);
 		++i;
 	}
+
+	//Errors :
+	//bad_link
+	//same_ID ?????????????????
+	//room_long
+	//room_short
 
 	freeFarm(&farm);
 	return (0);
