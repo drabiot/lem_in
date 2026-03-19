@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 14:07:26 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/03/19 15:03:46 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,8 @@ bool	transferData(t_AntFarm *farm, char *data)
 		if (defType == ROOM)
 		{
 			new_room = createRoom(data);
+			if (!new_room)
+				return (false);
 			addRoomToFarm(farm, new_room);
 		}
 		if (defType == LINK)
@@ -219,14 +221,17 @@ bool	transferData(t_AntFarm *farm, char *data)
 	return (true);
 }
 
-bool	fetchData(t_AntFarm *farm)
+char	*fetchData(t_AntFarm *farm)
 {
 	char	*line;
+	char	*data;
 	size_t	len;
 
+	data = ft_strdup("");
 	line = get_next_line(0);
 	while (line)
 	{
+		data = ft_strjoin(data, line);
 		len = ft_strlen(line);
 		if (len > 0 && line[len - 1] == '\n')
 			line[len - 1] = '\0';
@@ -234,18 +239,20 @@ bool	fetchData(t_AntFarm *farm)
 		{
 			free(line);
 			get_next_line(-1);
-			return (false);
+			return (data);
 		}
 		free(line);
 		line = get_next_line(0);
 	}
 	free(line);
-	return (true);
+	return (data);
 }
 
-bool	parseData(t_AntFarm *farm)
+void	parseData(t_AntFarm *farm)
 {
-	if (!fetchData(farm))
-		return (false);
-	return (true);
+	char	*data;
+
+	data = fetchData(farm);
+	write(1, data, ft_strlen(data));
+	free(data);
 }
