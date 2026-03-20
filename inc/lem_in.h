@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lem_in.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:46:28 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/20 14:09:37 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/03/20 14:38:43 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef struct s_pair
 # define ROOM		0
 # define LINK		1
 
-void	parseData(t_AntFarm *farm);
+void	parseData(t_AntFarm *farm, bool state);
 char	*ft_strdup(const char *src);
 int		ft_strcmp(const char *s1, const char *s2);
 char	**ft_split(char const *s, char c);

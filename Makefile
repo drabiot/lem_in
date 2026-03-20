@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
+#    By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/03/19 19:38:41 by mbirou           ###   ########.fr        #
+#    Updated: 2026/03/20 14:41:37 by tchartie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@
 #============ NAME ============#
 
 NAME			= 	lem-in
+NAME_B			=	visualizer
 
 #========= COMPILATOR =========#
 
@@ -41,8 +42,14 @@ WHITE			=	\033[0;97m
 #========== SOURCES ===========#
 
 SRC_DIR 		= 	src/
-SRC_NAME 		=	main.c\
-					pathCompute.c\
+SRC_NAME 		=	main.c \
+					pathCompute.c \
+					parser.c \
+					utils.c \
+					gnl/get_next_line.c \
+					gnl/get_next_line_utils.c
+
+SRC_NAME_B		=	visualizer.c \
 					parser.c \
 					utils.c \
 					gnl/get_next_line.c \
@@ -50,13 +57,20 @@ SRC_NAME 		=	main.c\
 
 OBJ_DIR 		=	obj/
 OBJ_NAME		=	$(SRC_NAME:.c=.o)
+OBJ_NAME_B		=	$(SRC_NAME_B:.c=.o)
 OBJ				=	$(patsubst %, $(OBJ_DIR)%, $(OBJ_NAME))
+OBJ_B			=	$(patsubst %, $(OBJ_DIR)%, $(OBJ_NAME_B))
 
 all:		$(NAME)
+visualizer:	all $(NAME_B)
 
 $(NAME):	$(OBJ)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 	@echo "$(GREEN)lem-in successfully compiled! $(BASE_COLOR)"
+
+$(NAME_B):	$(OBJ_B)
+	@$(CC) $(CFLAGS) -o $(NAME_B) $(OBJ_B)
+	@echo "$(GREEN)visualizer successfully compiled! $(BASE_COLOR)"
 
 $(OBJ_DIR)%.o:$(SRC_DIR)%.c
 	@mkdir -p $(dir $@)

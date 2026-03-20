@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   visualizer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/20 14:44:22 by tchartie         ###   ########.fr       */
+/*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
+/*   Updated: 2026/03/20 14:45:10 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	main(void)
 	if (!farm.room)
 		return (1);
 	farm.room[0] = NULL;
-	parseData(&farm, true);
+	parseData(&farm, false);
 	if (!farm.start || !farm.end)
 	{
 		perror(RED"ERROR"BASE_COLOR);
@@ -44,16 +44,21 @@ int	main(void)
 		return (1);
 	}
 
-	//Errors :
-	//bad_link
-	//same_ID ?????????????????
+	//DEBUG
+	/*if (farm.nbAnt)
+		printf("\nNb Ants: %s\n", farm.nbAnt);
+	if (farm.start)
+		printf("ID Start: %s\t\t[%d,%d]\n", farm.start->ID, farm.start->posX, farm.start->posY);
+	if (farm.end)
+		printf("ID End: %s\t\t[%d,%d]\n\n", farm.end->ID, farm.end->posX, farm.end->posY);
 
-	//printf("yo we boutta think\n");
+	int	i = 0;
 
-	//computePaths(&farm);
+	while (farm.room[i])
+	{
+		printf("ID Room [%d]: %s\t\t[%d,%d]\tnb Neighbours %d\n", i, farm.room[i]->ID, farm.room[i]->posX, farm.room[i]->posY, farm.room[i]->nbNeighbours);
+		++i;
+	}*/
 
-	//printf("yo we finished thinking\n");
-
-	freeFarm(&farm);
 	return (0);
 }

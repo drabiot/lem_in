@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/20 08:06:13 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/03/20 14:42:50 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,12 +272,15 @@ char	*fetchData(t_AntFarm *farm)
 	return (data);
 }
 
-void	parseData(t_AntFarm *farm)
+void	parseData(t_AntFarm *farm, bool state)
 {
 	char	*data;
 
 	data = fetchData(farm);
-	printf("PARSING FINISHED\n");
-	// write(1, data, ft_strlen(data));
+	if (state)
+	{
+		//printf("PARSING FINISHED\n");
+		write(1, data, ft_strlen(data));
+	}
 	free(data);
 }
