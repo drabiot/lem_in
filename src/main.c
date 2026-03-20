@@ -6,90 +6,71 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:45:50 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 19:34:59 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/03/20 14:16:57 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <lem-in.h>
+#include "lem_in.h"
 
-t_room	*roomMaker(char *ID)
+
+void	freeFarm(t_AntFarm *farm)
 {
-	t_room	*newRoom;
-	
-	newRoom = malloc(sizeof(t_room));
-	if (!newRoom)
-		return (NULL);
-	newRoom->ID = ID;
-	newRoom->IDAnts = 0;
-	newRoom->neighbours = malloc(sizeof(t_room));
-	newRoom->neighbours[0] = NULL;
-	newRoom->nbNeighbours = 0;
-	newRoom->isUsed = false;
-	newRoom->posX = 0;
-	newRoom->posY = 0;
-	return (newRoom);
-}
+	int	i;
 
-void	addNeighbour(t_room *room, t_room *newNeighbour)
-{
-	t_room	**newNeighboursList;
-	int		i;
-
-	newNeighboursList = malloc(sizeof(t_room) * (room->nbNeighbours + 2));
-	newNeighboursList[room->nbNeighbours + 1] = NULL;
 	i = 0;
-	while (i < room->nbNeighbours)
+	while (farm->room[i])
 	{
-		newNeighboursList[i] = room->neighbours[i];
-		i ++;
+		free(farm->room[i]->ID);
+		free(farm->room[i]);
+		i++;
 	}
-	newNeighboursList[room->nbNeighbours] = newNeighbour;
-	room->nbNeighbours += 1;
-	free(room->neighbours);
-	room->neighbours = newNeighboursList;
+	free(farm->room);
+	free(farm->nbAnt);
 }
 
 int	main(void)
 {
-	t_AntFarm	antFarm;
-	
-	antFarm.start = roomMaker("0");
-	antFarm.end = roomMaker("3");
+	t_AntFarm	farm;
 
-	antFarm.rooms = malloc(sizeof(t_room) * 5);
-	antFarm.rooms[4] = NULL;
-	antFarm.rooms[0] = antFarm.start;
-	antFarm.rooms[1] = roomMaker("1");
-	antFarm.rooms[2] = roomMaker("2");
-	antFarm.rooms[3] = antFarm.end;
-	antFarm.inbAnt = 10;
+	farm = (t_AntFarm){0};
+	farm.room = malloc(sizeof(t_room *));
+	if (!farm.room)
+		return (1);
+	farm.room[0] = NULL;
+	parseData(&farm);
+	if (!farm.start || !farm.end)
+	{
+		perror(RED"ERROR"BASE_COLOR);
+		freeFarm(&farm);
+		return (1);
+	}
 
-	addNeighbour(antFarm.rooms[0], antFarm.rooms[1]);
-	addNeighbour(antFarm.rooms[1], antFarm.rooms[2]);
-	addNeighbour(antFarm.rooms[2], antFarm.rooms[3]);
+	//DEBUG
+	/*if (farm.nbAnt)
+		printf("\nNb Ants: %s\n", farm.nbAnt);
+	if (farm.start)
+		printf("ID Start: %s\t\t[%d,%d]\n", farm.start->ID, farm.start->posX, farm.start->posY);
+	if (farm.end)
+		printf("ID End: %s\t\t[%d,%d]\n\n", farm.end->ID, farm.end->posX, farm.end->posY);
 
+	int	i = 0;
 
-	t_room * tp0 = roomMaker("0.5");
-	addNeighbour(antFarm.rooms[0], tp0);
-	addNeighbour(tp0, antFarm.rooms[0]);
+	while (farm.room[i])
+	{
+		printf("ID Room [%d]: %s\t\t[%d,%d]\tnb Neighbours %d\n", i, farm.room[i]->ID, farm.room[i]->posX, farm.room[i]->posY, farm.room[i]->nbNeighbours);
+		++i;
+	}*/
 
-	t_room * tp1 = roomMaker("1.5");
-	addNeighbour(antFarm.rooms[1], tp1);
-	addNeighbour(tp1, antFarm.rooms[2]);
-	addNeighbour(tp0, tp1);
-	addNeighbour(tp1, tp0);
+	//Errors :
+	//bad_link
+	//same_ID ?????????????????
 
-	t_room * tp2 = roomMaker("2.5");
-	addNeighbour(antFarm.rooms[3], tp2);
-	addNeighbour(tp2, antFarm.rooms[3]);
-	addNeighbour(tp1, tp2);
-	addNeighbour(tp2, tp1);
+	printf("yo we boutta think\n");
 
+	computePaths(&farm);
 
+	printf("yo we finished thinking\n");
 
-	computePaths(&antFarm);
-
-
-
+	freeFarm(&farm);
 	return (0);
 }

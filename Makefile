@@ -6,7 +6,7 @@
 #    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/03/10 15:31:21 by mbirou           ###   ########.fr        #
+#    Updated: 2026/03/19 19:38:41 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,11 @@ WHITE			=	\033[0;97m
 
 SRC_DIR 		= 	src/
 SRC_NAME 		=	main.c\
-					pathCompute.c
+					pathCompute.c\
+					parser.c \
+					utils.c \
+					gnl/get_next_line.c \
+					gnl/get_next_line_utils.c
 
 OBJ_DIR 		=	obj/
 OBJ_NAME		=	$(SRC_NAME:.c=.o)

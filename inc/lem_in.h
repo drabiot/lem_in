@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lem-in.h                                           :+:      :+:    :+:   */
+/*   lem_in.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:46:28 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 19:26:32 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/03/20 14:09:37 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define LEM_IN_H
 
 # include "color.h"
-# include <stdbool.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include <unistd.h>
 # include <stdio.h>
 
@@ -30,27 +30,43 @@ typedef struct s_room
 	int				posY;
 }					t_room;
 
-typedef struct s_AntFarm
+typedef struct	s_AntFarm
 {
-	t_room	**rooms;
+	t_room	**room;
 	t_room	*start;
 	t_room	*end;
 	char	*nbAnt;
-	int		inbAnt;
 }			t_AntFarm;
-
-// pathCompute.c ================================
 
 typedef struct s_bestPred
 {
 	t_room				***paths;
 	float				antsPerCycle;
-	struct s_bestPred	*next;
 }						t_bestPred;
 
-t_room	**computePaths(t_AntFarm *antFarm);
+typedef struct s_pair
+{
+	void	*first;
+	void	*second;
+}			t_pair;
 
+# define INIT		0
+# define NO_TYPE	1
+# define START		2
+# define END		3
+# define COMMENT	4
+# define ERROR		5
 
+# define ROOM		0
+# define LINK		1
+
+void	parseData(t_AntFarm *farm);
+char	*ft_strdup(const char *src);
+int		ft_strcmp(const char *s1, const char *s2);
+char	**ft_split(char const *s, char c);
+int		ft_atoi(const char *str);
+
+t_bestPred	computePaths(t_AntFarm *antFarm);
 
 
 #endif //LEM_IN_H
