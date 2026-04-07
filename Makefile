@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+         #
+#    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/03/20 14:41:37 by tchartie         ###   ########.fr        #
+#    Updated: 2026/04/07 23:23:31 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,15 +42,10 @@ WHITE			=	\033[0;97m
 #========== SOURCES ===========#
 
 SRC_DIR 		= 	src/
-SRC_NAME 		=	main.c \
-					pathCompute.c \
+SRC_NAME 		=	main.c\
+					pathCompute.c\
 					parser.c \
-					utils.c \
-					gnl/get_next_line.c \
-					gnl/get_next_line_utils.c
-
-SRC_NAME_B		=	visualizer.c \
-					parser.c \
+					sim.c \
 					utils.c \
 					gnl/get_next_line.c \
 					gnl/get_next_line_utils.c

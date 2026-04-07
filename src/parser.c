@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:55:09 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/20 14:42:50 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/07 23:22:10 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ t_room	*createRoom(char *data)
 	room->neighbours[0] = NULL;
 	room->nbNeighbours = 0;
 	room->isUsed = false;
+	room->distToEnd = __INT_MAX__;
 	freeSplit(split);
 	return (room);
 }
@@ -201,7 +202,8 @@ bool	transferData(t_AntFarm *farm, char *data)
 
 	if (type == INIT)
 	{
-		farm->nbAnt = ft_strdup(data);
+		farm->nbAntstr = ft_strdup(data);
+		farm->nbAnt = ft_atoi(farm->nbAntstr);
 		type = NO_TYPE;
 		return (true);
 	}
