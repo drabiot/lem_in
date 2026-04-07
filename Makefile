@@ -6,7 +6,7 @@
 #    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/03/19 19:38:41 by mbirou           ###   ########.fr        #
+#    Updated: 2026/04/07 22:53:30 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,7 @@ SRC_DIR 		= 	src/
 SRC_NAME 		=	main.c\
 					pathCompute.c\
 					parser.c \
+					sim.c \
 					utils.c \
 					gnl/get_next_line.c \
 					gnl/get_next_line_utils.c

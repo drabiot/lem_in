@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:46:28 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/20 14:09:37 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/07 22:52:44 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct s_room
 	struct s_room	**neighbours;
 	int				nbNeighbours;
 	bool			isUsed;
+	int				distToEnd;
 	int				posX;
 	int				posY;
 }					t_room;
@@ -35,20 +36,27 @@ typedef struct	s_AntFarm
 	t_room	**room;
 	t_room	*start;
 	t_room	*end;
-	char	*nbAnt;
+	int		nbAnt;
+	char	*nbAntstr;
 }			t_AntFarm;
 
-typedef struct s_bestPred
+typedef struct	s_path
 {
-	t_room				***paths;
-	float				antsPerCycle;
-}						t_bestPred;
+	t_room	**path;
+	int		nodeLenght;
+}			t_path;
 
-typedef struct s_pair
+typedef struct s_pairRoomFloat
 {
-	void	*first;
-	void	*second;
-}			t_pair;
+	t_room	*first;
+	float	second;
+}			t_pairRoomFloat;
+
+typedef struct s_pathPair
+{
+	t_room	*first;
+	t_room	*second;
+}			t_pathPair;
 
 # define INIT		0
 # define NO_TYPE	1
@@ -66,7 +74,8 @@ int		ft_strcmp(const char *s1, const char *s2);
 char	**ft_split(char const *s, char c);
 int		ft_atoi(const char *str);
 
-t_bestPred	computePaths(t_AntFarm *antFarm);
+t_path	**computePaths(t_AntFarm *antFarm);
 
+void	sim(t_AntFarm *antFarm, t_path **paths);
 
 #endif //LEM_IN_H
