@@ -6,7 +6,7 @@
 #    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/04/08 00:09:42 by mbirou           ###   ########.fr        #
+#    Updated: 2026/04/08 17:00:09 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,8 +27,12 @@ CFLAGS 			= 	-I$(INC) -Wall -Werror -Wextra -g
 
 MAKEFLAGS		=	--no-print-directory
 
-LIBMLX = MLX42
-LIBS = ./$(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
+LIBRARIES_DIR = libs/
+GLFW = $(LIBRARIES_DIR)glfw/
+CGLM = $(LIBRARIES_DIR)cglm/
+LIBS = -ldl -lglfw -pthread -lm $(GLFW)build/src/libglfw3.a
+GLAD = ../libs/glad/glad.c
+GLADO = $(patsubst %, $(OBJ_DIR)%, $(GLAD:.c=.o))
 
 #=========== COLOR ============#
 
@@ -69,24 +73,56 @@ OBJ_B			=	$(patsubst %, $(OBJ_DIR)%, $(OBJ_NAME_B))
 
 all:		$(NAME)
 
-mlx :
-	@if ls | grep -q "MLX42"; then \
-		clear; \
-		echo "\033[32;47;1m** MLX42 already exist **\033[1;m"; \
-	else \
-		git clone https://github.com/codam-coding-college/MLX42.git; \
-		cmake ./MLX42 -B ./MLX42/build; \
-		make -C ./MLX42/build --no-print-directory -j4; \
-		make --directory ./MLX42/build; \
+$(LIBRARIES_DIR):
+	mkdir -p $(LIBRARIES_DIR)
+
+glfw: $(LIBRARIES_DIR)
+	@if [ ! -d "$(GLFW)" ]; then \
+		echo "$(DARK_PINK)Directory $(GLFW) does not exist. Cloning the repository...$(BASE_COLOR)"; \
+        git clone https://github.com/glfw/glfw.git $(GLFW); \
+    else \
+       echo "$(GREEN)glfw Found, no need to pull$(BASE_COLOR)"; \
+	fi
+	@if [ ! -f "$(GLFW)build/src/libglfw3.a" ]; then \
+		cmake $(GLFW) -B $(GLFW)/build; \
+		make -C $(GLFW)/build --no-print-directory -j$(nproc) ;\
+	fi
+
+glad: $(LIBRARIES_DIR)
+	@if ls libs | grep -q "glad"; then\
+  		echo "$(GREEN)glad is here$(BASE_COLOR)";\
+  	else \
+		echo "$(RED)Downloading glad$(BASE_COLOR)";\
+		mkdir $(LIBRARIES_DIR)glad;\
+		cd $(LIBRARIES_DIR)glad;\
+		mkdir glad;\
+		cd glad;\
+		curl https://raw.githubusercontent.com/Manualouest/42_postCC/refs/heads/ft_scop/libs/glad/glad.h --output glad.h;\
+		cd ..;\
+		curl https://raw.githubusercontent.com/Manualouest/42_postCC/refs/heads/ft_scop/libs/glad/glad.c --output glad.c;\
+		echo "\$(GREEN)Downloaded glad$(BASE_COLOR)";\
+	fi
+
+cglm: $(LIBRARIES_DIR)
+	@if [ ! -d "$(CGLM)" ]; then \
+		echo "$(DARK_PINK)Directory $(CGLM) does not exist. Cloning the repository...$(BASE_COLOR)"; \
+        git clone https://github.com/recp/cglm.git $(CGLM); \
+		cd $(CGLM); \
+		mkdir build; \
+		cd build; \
+		cmake ..; \
+		make; \
+    else \
+       echo "$(GREEN)CGLM Found, no need to pull$(BASE_COLOR)"; \
 	fi
 
 $(NAME):	$(OBJ)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 	@echo "$(GREEN)lem-in successfully compiled! $(BASE_COLOR)"
 
-visualizer : CFLAGS += -I./$(LIBMLX)/include
-visualizer:	mlx $(OBJ_B)
-	@$(CC) $(CFLAGS) -o $(NAME_B) $(OBJ_B) $(LIBS)
+visualizer:	CFLAGS += -I$(LIBRARIES_DIR)/glad -I$(GLFW)include  -I$(CGLM)include
+visualizer:	glad glfw cglm $(GLADO) $(OBJ_B)
+	@$(CC) $(CFLAGS) -o $(NAME_B) $(OBJ_B) $(GLADO) $(LIBS)
 	@echo "$(GREEN)visualizer successfully compiled! $(BASE_COLOR)"
 
 $(OBJ_DIR)%.o:$(SRC_DIR)%.c
@@ -104,8 +140,8 @@ fclean:		clean
 	@echo "$(CYAN)lem-in executable file cleanned! $(BASE_COLOR)"
 
 libclean:	
-	@rm -rf $(LIBMLX)
-	@echo "$(CYAN)mlx deleted! $(BASE_COLOR)"
+	@rm -rf $(LIBRARIES_DIR)
+	@echo "$(CYAN)libs deleted! $(BASE_COLOR)"
 
 
 re: 		fclean all

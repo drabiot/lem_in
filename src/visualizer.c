@@ -6,12 +6,16 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/07 23:53:42 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/08 17:02:05 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <lem_in.h>
 #include <visualizer.h>
+
+void	launchOpenGl(void);
+
+
 
 void	freeFarm(t_AntFarm *farm)
 {
@@ -59,85 +63,107 @@ void	computeDistToEnd(t_room *room, int distToEnd)
 	}
 }
 
-
 int	main(void)
 {
-	t_AntFarm	farm;
-	t_path		**paths;
 
-	farm = (t_AntFarm){0};
-	farm.room = malloc(sizeof(t_room *));
-	if (!farm.room)
-		return (1);
-	farm.room[0] = NULL;
-	parseData(&farm, true);
-	if (!farm.start || !farm.end)
-	{
-		perror(RED"ERROR"BASE_COLOR);
-		freeFarm(&farm);
-		return (1);
-	}
+	launchOpenGl();
 
-
-	computeDistToEnd(farm.end, 0);
-
-	//DEBUG
-	/*if (farm.nbAnt)
-		printf("\nNb Ants: %s\n", farm.nbAnt);
-	if (farm.start)
-		printf("ID Start: %s\t\t[%d,%d]\n", farm.start->ID, farm.start->posX, farm.start->posY);
-	if (farm.end)
-		printf("ID End: %s\t\t[%d,%d]\n\n", farm.end->ID, farm.end->posX, farm.end->posY);
-
-	int	i = 0;
-
-	while (farm.room[i])
-	{
-		printf("ID Room [%d]: %s\t\t[%d,%d]\tnb Neighbours %d\n", i, farm.room[i]->ID, farm.room[i]->posX, farm.room[i]->posY, farm.room[i]->nbNeighbours);
-		++i;
-	}*/
-
-	//Errors :
-	//bad_link
-	//same_ID ?????????????????
-
-
-	paths = computePaths(&farm);
-
-
-	////////////////////// DEBUG
-	printf("\n\n");
-	int	i = 0;
-	int	ii = 0;
-	while (paths[i])
-	{
-		ii = 0;
-		printf("path %d found (length: %d)", i, paths[i]->nodeLenght);
-		while (paths[i]->path[ii])
-		{
-			printf("; %s", paths[i]->path[ii]->ID);
-			ii ++;
-		}
-		printf("\n");
-		i ++;
-	}
-	i = 0;
-	while (farm.room[i])
-		i ++;
-	printf("\nnbRoom: %d\n\n", i);
-	//////////////////////
-
-	if (paths)
-		sim(&farm, paths);
-	else
-		write(1, RED"ERROR\nCould not create path\n"BASE_COLOR, 40);
-
-
-	
-
-
-
-	freePaths(paths);
-	freeFarm(&farm);
 	return (0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GLFWwindow	*_windowData;
+int			WWIDTH = 900;
+int			WHEIGHT = 900;
+char		WNAME[7] = "lem_in";
+
+void	launchOpenGl(void)
+{
+
+	if (!glfwInit())
+		return ;
+		// throw std::runtime_error(RED BOLD UNDL "GLFW Initialisation Failed\n" CLR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
+
+	GLFWmonitor	*monitor = NULL;
+	
+	_windowData = glfwCreateWindow(WWIDTH, WHEIGHT, WNAME, monitor, NULL);
+	if (!_windowData)
+	{
+		glfwTerminate();
+		return ;
+		// throw std::runtime_error(RED BOLD UNDL "Window Creation Failed\n" CLR);
+	}
+	glfwMakeContextCurrent(_windowData);
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		glfwTerminate();
+		return ;
+		// throw std::runtime_error(RED BOLD UNDL "Glad Failed to Init\n" CLR);
+	}
+	
+	glfwGetWindowSize(_windowData, &WWIDTH, &WHEIGHT);
+	glViewport(0, 0, WWIDTH, WHEIGHT);
+
+    // glDebugMessageCallback(opengErrorMsg, 0);
+
+	glfwSetInputMode(_windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	// glfwSetFramebufferSizeCallback(_windowData, _resize);
+	// glfwSetKeyCallback(_windowData, _keyInput);
+	// glfwSetMouseButtonCallback(_windowData, _mouseInput);
+
+	glClearColor(0.698039216f, 1.f, 1.f, 1.f);
+	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glfwSetCursorPos(_windowData, WWIDTH / 2.f, WHEIGHT / 2.f);
+	// glfwGetCursorPos(_windowData, &_mousePos.x, &_mousePos.y);
+
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glEnable(GL_MULTISAMPLE);
+
+	glfwSwapInterval(1); //1 = 60fps; 0 = no stop
+
+
+	while(!glfwWindowShouldClose(_windowData))
+	{
+		glfwPollEvents();
+	}
+
+
+	glfwTerminate();
+}
+
+
+
+
+
+

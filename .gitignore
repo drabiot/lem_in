@@ -2,3 +2,4 @@ lem-in
 visualizer
 obj/
 */*.o
+libs/
