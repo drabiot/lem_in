@@ -3,3 +3,4 @@ visualizer
 obj/
 */*.o
 libs/
+.vscode/

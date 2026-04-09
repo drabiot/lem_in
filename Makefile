@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
+#    By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/04/08 17:00:09 by mbirou           ###   ########.fr        #
+#    Updated: 2026/04/09 15:43:43 by tchartie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,9 +30,12 @@ MAKEFLAGS		=	--no-print-directory
 LIBRARIES_DIR = libs/
 GLFW = $(LIBRARIES_DIR)glfw/
 CGLM = $(LIBRARIES_DIR)cglm/
+VEC = $(LIBRARIES_DIR)vector/
 LIBS = -ldl -lglfw -pthread -lm $(GLFW)build/src/libglfw3.a
 GLAD = ../libs/glad/glad.c
+VECTOR = ../libs/vector/vec.c
 GLADO = $(patsubst %, $(OBJ_DIR)%, $(GLAD:.c=.o))
+VECO = $(patsubst %, $(OBJ_DIR)%, $(VECTOR:.c=.o))
 
 #=========== COLOR ============#
 
@@ -116,13 +119,22 @@ cglm: $(LIBRARIES_DIR)
        echo "$(GREEN)CGLM Found, no need to pull$(BASE_COLOR)"; \
 	fi
 
+vector: $(LIBRARIES_DIR)
+	@if [ ! -d "$(VEC)" ]; then \
+		echo "$(DARK_PINK)Directory $(VEC) does not exist. Cloning the repository...$(BASE_COLOR)"; \
+        git clone https://github.com/Mashpoe/c-vector.git $(VEC); \
+		cd $(VEC); \
+    else \
+       echo "$(GREEN)Vector Found, no need to pull$(BASE_COLOR)"; \
+	fi
+
 $(NAME):	$(OBJ)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 	@echo "$(GREEN)lem-in successfully compiled! $(BASE_COLOR)"
 
-visualizer:	CFLAGS += -I$(LIBRARIES_DIR)/glad -I$(GLFW)include  -I$(CGLM)include
-visualizer:	glad glfw cglm $(GLADO) $(OBJ_B)
-	@$(CC) $(CFLAGS) -o $(NAME_B) $(OBJ_B) $(GLADO) $(LIBS)
+visualizer:	CFLAGS += -I$(LIBRARIES_DIR)/glad -I$(GLFW)include  -I$(CGLM)include -I$(VEC)
+visualizer:	glad glfw cglm vector $(GLADO) $(VECO) $(OBJ_B)
+	@$(CC) $(CFLAGS) -o $(NAME_B) $(OBJ_B) $(GLADO) $(VECO) $(LIBS)
 	@echo "$(GREEN)visualizer successfully compiled! $(BASE_COLOR)"
 
 $(OBJ_DIR)%.o:$(SRC_DIR)%.c
