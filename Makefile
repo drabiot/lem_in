@@ -6,7 +6,7 @@
 #    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/04/08 17:00:09 by mbirou           ###   ########.fr        #
+#    Updated: 2026/04/09 18:23:10 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,13 +57,18 @@ SRC_NAME 		=	main.c\
 					gnl/get_next_line.c \
 					gnl/get_next_line_utils.c
 
-SRC_NAME_B 		=	visualizer.c\
+SRC_NAME_B 		=	visualizer/visualizer.c\
+					visualizer/openGLMagic.c\
+					visualizer/camera.c\
+					visualizer/shader.c\
+					visualizer/texture.c\
 					pathCompute.c\
 					parser.c \
 					sim.c \
 					utils.c \
 					gnl/get_next_line.c \
 					gnl/get_next_line_utils.c
+
 
 OBJ_DIR 		=	obj/
 OBJ_NAME		=	$(SRC_NAME:.c=.o)
