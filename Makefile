@@ -6,7 +6,7 @@
 #    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/04/09 18:53:09 by mbirou           ###   ########.fr        #
+#    Updated: 2026/04/09 19:00:16 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,11 +60,11 @@ SRC_NAME 		=	main.c\
 					gnl/get_next_line.c \
 					gnl/get_next_line_utils.c
 
-SRC_NAME_B 		=	visualizer/visualizer.c\
-					visualizer/openGLMagic.c\
-					visualizer/camera.c\
-					visualizer/shader.c\
-					visualizer/texture.c\
+SRC_NAME_B 		=	bonus/visualizer.c\
+					bonus/openGLMagic.c\
+					bonus/camera.c\
+					bonus/shader.c\
+					bonus/texture.c\
 					pathCompute.c\
 					parser.c \
 					sim.c \
