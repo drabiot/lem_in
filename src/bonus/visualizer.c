@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/09 21:27:13 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/10 13:39:22 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,18 +261,11 @@ void	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	// float	testv[9] = {10.f, 0.f, -5.f,
-	// 				  8.660254f, 5.f, -5.f,
-	// 				  10.f, 0.f, 5.f};
-
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(testv), testv, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)vector_size(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(vector_size(vertices) * sizeof(float)), vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// int	test[3] = {0, 1, 2};
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(test), test, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, vector_size(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)(vector_size(indices) * sizeof(int)), indices, GL_STATIC_DRAW);
 	
 	printf("\n"GREEN"finish VBO"BASE_COLOR"\n");
 
@@ -287,8 +280,6 @@ void	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
 
 	
 	mat4	model = GLM_MAT4_IDENTITY;
-	float	rangle = 0;
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	while (window->isRuning)
 	{
 		startFrame();
@@ -309,9 +300,6 @@ void	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
 		}
 
 		bindShader(shader);
-		
-		glm_euler_xyz((vec3){rangle, 0, 0}, model);
-		rangle += GLM_PI_4 * window->deltaTime;
 
 		setMat4(shader, "view", getView(window->camera));
 		setMat4(shader, "proj", getProj(window->camera));
@@ -321,17 +309,7 @@ void	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-		setVec3(shader, "color", (vec3){0, 0, 0});
-
-		// glDrawArrays(GL_TRIANGLES, 0, sizeof(testv));
-		glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
-
-		setVec3(shader, "color", (vec3){1, 1, 1});
-		glm_euler_xyz((vec3){rangle + GLM_PI_2, 0, 0}, model);
-		setMat4(shader, "model", model);
-
-		// glDrawElements(GL_TRIANGLES, sizeof(test), GL_UNSIGNED_INT, 0);
-		glDrawElements(GL_TRIANGLES, vector_size(indices), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, (GLsizei)vector_size(indices), GL_UNSIGNED_INT, 0);
 
 		if (window->lockMouse)
 			updateCam(window->camera);

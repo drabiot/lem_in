@@ -10,6 +10,7 @@ uniform vec3 color;
 
 void main()
 {
-    //FragColor = texture(tex, TexCoord);
-	FragColor = vec4(color, 1);
+	vec3 npos = abs(normalize(pos));
+    FragColor = texture(tex, TexCoord);
+	FragColor = vec4(vec3(npos.x, npos.y, npos.z), 1);
 }
