@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/10 13:39:22 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/10 14:13:25 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include <visualizer.h>
 
 
-void	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate);
+t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate);
+void		drawTunnel(t_tunnel *tunnel, mat4 model);
 
 
 void	freeFarm(t_AntFarm *farm)
@@ -79,17 +80,47 @@ int	main(void)
 {
 	
 	launchOpenGL();
-	vec3 posA = GLM_VEC3_ZERO;
-	vec3 posB = GLM_VEC3_ZERO;
-	glm_vec3_add(posB, (vec3){0, 0, 10}, posB);
-	createTunnel(10, posA, posB, 0, 0);
 
+    vec3 posA1 = GLM_VEC3_ZERO;
+    vec3 posB1 = {0, 0, 10};
+    t_tunnel t1 = createTunnel(10, posA1, posB1, 0, 0);
 
+    vec3 posA2 = {0, 0, 10};
+    vec3 posB2 = {0, 0, 20};
+    t_tunnel t2 = createTunnel(20, posA2, posB2, 0, 0);
 
+	mat4 model = GLM_MAT4_IDENTITY_INIT;
 
+	while (window->isRuning)
+	{
+		startFrame();
 
-	printf("\n"GREEN"finish window open"BASE_COLOR"\n");
+		if (isKeyPressed(GLFW_KEY_ESCAPE))
+			glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
 
+		if (isKeyPressed(GLFW_KEY_LEFT_CONTROL))
+		{
+			window->lockMouse = !window->lockMouse;
+			if (window->lockMouse)
+			{
+				glfwSetCursorPos(window->windowData, window->width / 2, window->height / 2);
+				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+				refreshMouse();
+			}
+			else
+				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+
+		drawTunnel(&t1, model);
+		drawTunnel(&t2, model);
+
+		if (window->lockMouse)
+        updateCam(window->camera);
+
+		endFrame();
+	}
+	glfwTerminate();
+	
 	return (0);
 }
 
@@ -230,15 +261,13 @@ void	buildVerticesSmooth(float length, int sectorCount, vec_float *vertices, vec
 	}
 }
 
-void	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
+t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
 {
-	(void)radius;
 	(void)angle;
 	(void)rotate;
 
-	float length;
-
-	length = glm_vec3_distance(posA, posB);
+	t_tunnel	tunnel = {0};
+	float 		length = glm_vec3_distance(posA, posB);
 
 	vec_float	vertices = vector_create();
 	vec_float	normals = vector_create();
@@ -246,98 +275,44 @@ void	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
 	vec_int		indices = vector_create();
 
 	buildVerticesSmooth(length, 12, &vertices, &normals, &texCoords, &indices, radius);
-
-	for (unsigned long i = 0; i < vector_size(vertices) - 2 && i < vector_size(indices) - 2; i += 3)
-		printf("ID: %lu, Vertices: %f, %f, %f\tIndices: %d, %d, %d\n", i / 3, vertices[i], vertices[i + 1], vertices[i + 2], indices[i], indices[i + 1], indices[i + 2]);
-
-		
-	//Execute
-	unsigned int VAO = 0;
-	glGenVertexArrays(1, &VAO);
-	unsigned int VBO = 0;
-	glGenBuffers(1, &VBO);
-	unsigned int EBO = 0;
-	glGenBuffers(1, &EBO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	
+	glGenVertexArrays(1, &tunnel.VAO);
+	glGenBuffers(1, &tunnel.VBO);
+	glGenBuffers(1, &tunnel.EBO);
+	glBindVertexArray(tunnel.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, tunnel.VBO);
 
 	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(vector_size(vertices) * sizeof(float)), vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tunnel.EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)(vector_size(indices) * sizeof(int)), indices, GL_STATIC_DRAW);
-	
-	printf("\n"GREEN"finish VBO"BASE_COLOR"\n");
 
-	shaderID	shader = createShader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
-	if (!shader)
-		return;
-	t_texture	*cat = loadTexture("assets/textures/cat.bmp");
-	if (!cat)
-		return;
+	tunnel.indexCount = (int)vector_size(indices);
+	tunnel.shader = createShader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+	//if (!tunnel.shader)
+	//	return (NULL);
 
-	printf("\n"GREEN"finish shader/texture"BASE_COLOR"\n");
+	glBindVertexArray(0);
 
-	
-	mat4	model = GLM_MAT4_IDENTITY;
-	while (window->isRuning)
-	{
-		startFrame();
+	vector_free(vertices);
+    vector_free(normals);
+    vector_free(texCoords);
+    vector_free(indices);
 
-		if (isKeyPressed(GLFW_KEY_ESCAPE))
-			glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
-		if (isKeyPressed(GLFW_KEY_LEFT_CONTROL))
-		{
-			window->lockMouse = !window->lockMouse;
-			if (window->lockMouse)
-			{
-				glfwSetCursorPos(window->windowData, window->width / 2, window->height / 2);
-				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-				refreshMouse();
-			}
-			else
-				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
-
-		bindShader(shader);
-
-		setMat4(shader, "view", getView(window->camera));
-		setMat4(shader, "proj", getProj(window->camera));
-		setMat4(shader, "model", model);
-		useTexture(cat, shader, "tex", 0);
-
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-		glDrawElements(GL_TRIANGLES, (GLsizei)vector_size(indices), GL_UNSIGNED_INT, 0);
-
-		if (window->lockMouse)
-			updateCam(window->camera);
-
-   		endFrame();
-	}
-	deleteTexture(cat);
-	glfwTerminate();
+	return (tunnel);
 }
 
+void	drawTunnel(t_tunnel *tunnel, mat4 model)
+{
+	bindShader(tunnel->shader);
+	setMat4(tunnel->shader, "view",  getView(window->camera));
+    setMat4(tunnel->shader, "proj",  getProj(window->camera));
+    setMat4(tunnel->shader, "model", model);
+    //useTexture(tunnel->texture, tunnel->shader, "tex", 0);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    glBindVertexArray(tunnel->VAO);
+    glDrawElements(GL_TRIANGLES, tunnel->indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
 
