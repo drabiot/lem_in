@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/09 18:56:02 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 12:59:59 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,84 +77,102 @@ unsigned int indices[] = {  // note that we start from 0!
 
 int	main(void)
 {
+	launchOpenGL();
 
-	vec3 posA = GLM_VEC3_ZERO;
-	vec3 posB = GLM_VEC3_ZERO;
-	createTunnel(10, posA, posB, 0, 0);
+	initGui();
 
+	t_guiElement	*camPos = createGuiElement();
+	t_guiElement	*camAng = createGuiElement();
+	setGuiScale(camPos, 12);
+	setGuiPos(camPos, (vec2){-1, 0.76});
+	setGuiScale(camAng, 12);
+	setGuiPos(camAng, (vec2){-1, 0.86});
 
+	printf("\n"GREEN"finish window open"BASE_COLOR"\n");
 
+	unsigned int VAO = 0;
+	glGenVertexArrays(1, &VAO);
+	unsigned int VBO1 = 0;
+	glGenBuffers(1, &VBO1);
+	unsigned int VBO2 = 0;
+	glGenBuffers(1, &VBO2);
+	unsigned int EBO = 0;
+	glGenBuffers(1, &EBO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	// launchOpenGL();
+	printf("\n"GREEN"finish VBO"BASE_COLOR"\n");
 
-	// printf("\n"GREEN"finish window open"BASE_COLOR"\n");
+	shaderID	shader = createShader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+	if (!shader)
+		return (0);
+	t_texture	*cat = loadTexture("assets/textures/cat.bmp");
+	if (!cat)
+		return (0);
 
-	// unsigned int VAO = 0;
-	// glGenVertexArrays(1, &VAO);
-	// unsigned int VBO = 0;
-	// glGenBuffers(1, &VBO);
-	// unsigned int EBO = 0;
-	// glGenBuffers(1, &EBO);
-	// glBindVertexArray(VAO);
-	// glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	// glEnableVertexAttribArray(0);
-	// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	// glEnableVertexAttribArray(1);
-	// glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	// glEnableVertexAttribArray(2);
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	printf("\n"GREEN"finish shader/texture"BASE_COLOR"\n");
 
-	// printf("\n"GREEN"finish VBO"BASE_COLOR"\n");
+	while (window->isRuning)
+	{
+		startFrame();
 
-	// shaderID	shader = createShader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
-	// if (!shader)
-	// 	return (0);
-	// t_texture	*cat = loadTexture("assets/textures/cat.bmp");
-	// if (!cat)
-	// 	return (0);
+		if (isKeyPressed(GLFW_KEY_ESCAPE))
+			glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
+		if (isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE))
+		{
+			window->lockMouse = !window->lockMouse;
+			if (window->lockMouse)
+			{
+				glfwSetCursorPos(window->windowData, window->width / 2, window->height / 2);
+				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+				refreshMouse();
+			}
+			else
+				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 
-	// printf("\n"GREEN"finish shader/texture"BASE_COLOR"\n");
-
-	// while (window->isRuning)
-	// {
-	// 	startFrame();
-
-	// 	if (isKeyPressed(GLFW_KEY_ESCAPE))
-	// 		glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
-	// 	if (isKeyPressed(GLFW_KEY_LEFT_CONTROL))
-	// 	{
-	// 		window->lockMouse = !window->lockMouse;
-	// 		if (window->lockMouse)
-	// 		{
-	// 			glfwSetCursorPos(window->windowData, window->width / 2, window->height / 2);
-	// 			glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	// 			refreshMouse();
-	// 		}
-	// 		else
-	// 			glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	// 	}
-
-	// 	bindShader(shader);
+		bindShader(shader);
 		
-	// 	setMat4(shader, "view", getView(window->camera));
-	// 	setMat4(shader, "proj", getProj(window->camera));
-	// 	setMat4(shader, "model", GLM_MAT4_IDENTITY);
-	// 	useTexture(cat, shader, "tex", 0);
 
-	// 	glBindVertexArray(VAO);
-	// 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	// 	if (window->lockMouse)
-	// 		updateCam(window->camera);
+		setMat4(shader, "view", getView(window->camera));
+		setMat4(shader, "proj", getProj(window->camera));
+		setMat4(shader, "model", GLM_MAT4_IDENTITY);
+		useTexture(cat, shader, "tex", 0);
 
-   	// 	endFrame();
-	// }
-	// deleteTexture(cat);
-	// glfwTerminate();
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+		setGuiTextf(camPos, "pos: %.2f; %.2f; %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
+		setGuiTextf(camAng, "cam: %.2f; %.2f", window->camera->yaw, window->camera->pitch);
+		fitGuiToText(camPos, 1);
+		fitGuiToText(camAng, 1);
+
+		drawGui(camPos);
+		drawGui(camAng);
+
+
+		if (window->lockMouse)
+			updateCam(window->camera);
+
+   		endFrame();
+	}
+	deleteTexture(cat);
+	terminateGui();
+	glfwTerminate();
 	return (0);
 }
 

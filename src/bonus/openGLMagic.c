@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 17:17:36 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/09 18:47:45 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 13:26:16 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void	keyCallBack(GLFWwindow *windowData, int key, int scancode, int action, int 
 		window->keysSates[key] = false;
 }
 
-void	mouseCallBack(GLFWwindow* windowData, int button, int action, int mods)
+void	mouseCallBack(GLFWwindow *windowData, int button, int action, int mods)
 {
 	(void)windowData;
 	(void)mods;
@@ -217,6 +217,14 @@ void	mouseCallBack(GLFWwindow* windowData, int button, int action, int mods)
 		window->mouseSates[button] = true;
 	else
 		window->mouseSates[button] = false;
+}
+
+void	focusCallBack(GLFWwindow *windowData, int focused)
+{
+	(void)windowData;
+	(void)focused;
+	window->lockMouse = false;
+	glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 static void	setupWindow(t_windowInfo *window)
@@ -228,6 +236,7 @@ static void	setupWindow(t_windowInfo *window)
 	glfwSetFramebufferSizeCallback(window->windowData, resizeCallBack);
 	glfwSetKeyCallback(window->windowData, keyCallBack);
 	glfwSetMouseButtonCallback(window->windowData, mouseCallBack);
+	glfwSetWindowFocusCallback(window->windowData, focusCallBack);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

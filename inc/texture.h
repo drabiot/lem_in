@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 17:36:06 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/09 18:23:34 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/10 15:33:57 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,7 @@ typedef struct	s_texture
 t_texture	*loadTexture(char *path);
 void		deleteTexture(t_texture	*texture);
 void		useTexture(t_texture *texture, shaderID shader, char *uniform, int offset);
+
+void		clearTextures();
 
 #endif
