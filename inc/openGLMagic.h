@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 17:17:57 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/12 15:22:33 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 13:51:06 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct	s_windowInfo
 	double		mousePos[2];
 	bool		keysSates[Max_Keys];
 	bool		mouseSates[Max_Mouse_Keys];
+	vec2		mouseScroll;
 	bool		isRuning;
 	bool		lockMouse;
 	float		pastTime;
@@ -63,5 +64,7 @@ bool	isKeyPressed(const int key);
 bool	isKeyRepeated(const int key);
 bool	isMousePressed(const int key);
 bool	isMouseRepeated(const int key);
+float	getMouseScrollX();
+float	getMouseScrollY();
 
 #endif

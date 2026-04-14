@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 13:16:18 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/14 13:03:20 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 14:06:09 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,9 @@ void	updateCam(t_camera *camera)
 	glm_vec3_crossn(camera->front, WorldUp, camera->right);
 	glm_vec3_crossn(camera->right, camera->front, camera->up);
 	// updating camera pos
-	camera->speed = DefaultSpeed;
-	if (isKeyRepeated(GLFW_KEY_LEFT_CONTROL))
-		camera->speed *= 10;
+	setClampVal(&camera->speed, camera->speed + getMouseScrollY() * 10
+		+ isKeyPressed(GLFW_KEY_KP_ADD) * 10 - isKeyPressed(GLFW_KEY_KP_SUBTRACT) * 10
+		, 10, 500);
 	if (isKeyRepeated(GLFW_KEY_W))
 		glm_vec3_muladds(camera->dir, -camera->speed * window->deltaTime, camera->pos);
 	if (isKeyRepeated(GLFW_KEY_S))

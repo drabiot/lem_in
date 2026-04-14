@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/14 13:39:41 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 14:07:59 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,8 +165,8 @@ int	main(void)
 			++i;
 		}
 
-		setGuiTextf(camPos, "pos: %.2f; %.2f; %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
-		setGuiTextf(camAng, "cam: %.2f; %.2f", window->camera->yaw, window->camera->pitch);
+		setGuiTextf(camPos, "pos: x: %.2f; y: %.2f; z: %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
+		setGuiTextf(camAng, "cam: %.2f; %.2f, speed: %d", window->camera->yaw, window->camera->pitch, (int)window->camera->speed);
 		fitGuiToText(camPos, 1);
 		fitGuiToText(camAng, 1);
 		drawGui(camPos);
