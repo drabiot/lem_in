@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 17:35:54 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/09 18:39:48 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/12 14:22:53 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,12 +107,7 @@ void		deleteTexture(t_texture	*texture)
 void		useTexture(t_texture *texture, shaderID shader, char *uniform, int offset)
 {
 	if (!texture || !texture->ID || !shader)
-	{
-		printf("%p\n", texture);
-		printf("%d\n", texture->ID);
-		printf("%d\n", shader);
 		return ;
-	}
 	setInt(shader, uniform, offset);
 	glActiveTexture(GL_TEXTURE0 + offset);
 	glBindTexture(GL_TEXTURE_2D, texture->ID);

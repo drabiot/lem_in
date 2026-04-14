@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:09:29 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/09 18:20:56 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/12 17:39:44 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,9 @@ shaderID	deleteShader(shaderID ID)
 
 bool	bindShader(shaderID ID)
 {
+	glUseProgram(ID);
 	if (!ID)
 		return (false);
-	glUseProgram(ID);
 	return (true);
 }
 
@@ -151,4 +151,18 @@ void	setVec3(shaderID ID, char *uniform, vec3 value)
 	if (!ID)
 		return ;
 	glUniform3fv(glGetUniformLocation(ID, uniform), 1, value);
+}
+
+void	setVec2(shaderID ID, char *uniform, vec2 value)
+{
+	if (!ID)
+		return ;
+	glUniform2fv(glGetUniformLocation(ID, uniform), 1, value);
+}
+
+void	setarray(shaderID ID, char *uniform, int *value, int count)
+{
+	if (!ID)
+		return ;
+	glUniform1iv(glGetUniformLocation(ID, uniform), count, value);
 }

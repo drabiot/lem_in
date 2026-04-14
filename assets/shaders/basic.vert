@@ -1,20 +1,19 @@
 #version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
-layout (location = 2) in vec2 aTexCoord;
+
+layout (location = 0) in vec3	aPos;
+layout (location = 1) in vec3	aColor;
+layout (location = 2) in vec2	aUv;
 
 uniform mat4	proj;
 uniform mat4	view;
 uniform mat4	model;
 
-out vec3 ourColor;
-out vec2 TexCoord;
-out vec3 pos;
+out vec3	Color;
+out vec2	Uv;
 
-void main()
+void	main()
 {
     gl_Position = proj * view * model * vec4(aPos, 1.0);
-	pos = aPos;
-    ourColor = aColor;
-    TexCoord = aTexCoord;
+    Color = aColor;
+    Uv = aUv;
 }

@@ -6,7 +6,7 @@
 #    By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/10 13:44:12 by tchartie          #+#    #+#              #
-#    Updated: 2026/04/09 19:00:16 by mbirou           ###   ########.fr        #
+#    Updated: 2026/04/14 13:15:19 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ CC 				= 	cc
 #=========== FLAGS ============#
 
 INC				= 	inc/
-CFLAGS 			= 	-I$(INC) -Wall -Werror -Wextra -g 
+CFLAGS 			= 	-I$(INC) -Wall -Werror -Wextra -MP -MMD -g -lstdc++
 
 MAKEFLAGS		=	--no-print-directory
 
@@ -65,6 +65,7 @@ SRC_NAME_B 		=	bonus/visualizer.c\
 					bonus/camera.c\
 					bonus/shader.c\
 					bonus/texture.c\
+					bonus/gui.c\
 					pathCompute.c\
 					parser.c \
 					sim.c \
@@ -72,12 +73,13 @@ SRC_NAME_B 		=	bonus/visualizer.c\
 					gnl/get_next_line.c \
 					gnl/get_next_line_utils.c
 
-
 OBJ_DIR 		=	obj/
 OBJ_NAME		=	$(SRC_NAME:.c=.o)
 OBJ_NAME_B		=	$(SRC_NAME_B:.c=.o)
 OBJ				=	$(patsubst %, $(OBJ_DIR)%, $(OBJ_NAME))
 OBJ_B			=	$(patsubst %, $(OBJ_DIR)%, $(OBJ_NAME_B))
+DEPS			=	$(addprefix $(OBJ_DIR), $(SRC_NAME:.c=.d))
+DEPS_B			=	$(addprefix $(OBJ_DIR), $(SRC_NAME_B:.c=.d)) $(addprefix $(OBJ_DIR), $(GLAD:.c=.d)) $(addprefix $(OBJ_DIR), $(VECTOR:.c=.d))
 
 all:		$(NAME)
 
@@ -145,9 +147,13 @@ visualizer:	glad glfw cglm vector $(GLADO) $(VECO) $(OBJ_B)
 $(OBJ_DIR)%.o:$(SRC_DIR)%.c
 	@mkdir -p $(dir $@)
 	@echo "$(YELLOW)Compiling: $< $(BASE_COLOR)"
-	@$(CC) $(CFLAGS) $< -c -o $@
+	@gcc $(CFLAGS) $< -c -o $@
 
 clean:
+	@rm -rf $(OBJ_CIMGUI)
+	@rm -rf $(GLADO)
+	@rm -rf $(VECO)
+	@rm -rf $(OBJ_B)
 	@rm -rf $(OBJ_DIR)
 	@echo "$(BLUE)lem-in objects files cleanned! $(BASE_COLOR)"
 
@@ -160,7 +166,9 @@ libclean:
 	@rm -rf $(LIBRARIES_DIR)
 	@echo "$(CYAN)libs deleted! $(BASE_COLOR)"
 
-
 re: 		fclean all
 
 .PHONY :	all clean fclean re
+
+-include $(DEPS)
+-include $(DEPS_B)

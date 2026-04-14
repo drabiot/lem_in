@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   visualizer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/10 15:59:53 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/14 13:39:41 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	computeDistToEnd(t_room *room, int distToEnd)
 
 int	main(void)
 {
-
 	//Parsing
 	t_AntFarm	farm;
 
@@ -84,7 +83,17 @@ int	main(void)
 		return (1);
 	}
 	
+
 	launchOpenGL();
+
+	initGui();
+	t_guiElement	*camPos = createGuiElement();
+	t_guiElement	*camAng = createGuiElement();
+	setGuiScale(camPos, 12);
+	setGuiPos(camPos, (vec2){-1, 0.76});
+	setGuiScale(camAng, 12);
+	setGuiPos(camAng, (vec2){-1, 0.86});
+
 
 	t_tunnel	*tunnels;
 	int			i;
@@ -136,7 +145,7 @@ int	main(void)
 		if (isKeyPressed(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
 
-		if (isKeyPressed(GLFW_KEY_LEFT_CONTROL))
+		if (isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE))
 		{
 			window->lockMouse = !window->lockMouse;
 			if (window->lockMouse)
@@ -156,11 +165,20 @@ int	main(void)
 			++i;
 		}
 
+		setGuiTextf(camPos, "pos: %.2f; %.2f; %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
+		setGuiTextf(camAng, "cam: %.2f; %.2f", window->camera->yaw, window->camera->pitch);
+		fitGuiToText(camPos, 1);
+		fitGuiToText(camAng, 1);
+		drawGui(camPos);
+		drawGui(camAng);
+
 		if (window->lockMouse)
-        updateCam(window->camera);
+       		updateCam(window->camera);
 
 		endFrame();
 	}
+	terminateGui();
+	deleteShader(tunnels->shader);
 	glfwTerminate();
 	
 	return (0);

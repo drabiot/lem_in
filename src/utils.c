@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 13:36:36 by tchartie          #+#    #+#             */
-/*   Updated: 2026/03/19 13:41:59 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/13 17:08:36 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,4 +181,21 @@ int	ft_atoi(const char *str)
 		i++;
 	}
 	return (ret * sign);
+}
+
+void	*ft_calloc(size_t size, size_t count)
+{
+	unsigned char	*data;
+	size_t			i;
+
+	data = malloc(size * count);
+	if (!data)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		data[i] = 0;
+		i ++;
+	}
+	return (data);
 }
