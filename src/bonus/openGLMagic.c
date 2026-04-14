@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 17:17:36 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/14 13:26:16 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 14:04:27 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void	endFrame()
 {
 	refreshMouse();
 	glfwSwapBuffers(window->windowData);
+	
+	glm_vec2_zero(window->mouseScroll);
 
 	window->deltaTime = window->pastTime - glfwGetTime();
 
@@ -129,6 +131,16 @@ bool	isMouseRepeated(const int key)
 	if (key >= Max_Mouse_Keys || key < 0)
 		return (false);
 	return (window->mouseSates[key]);
+}
+
+float	getMouseScrollX()
+{
+	return (window->mouseScroll[0]);
+}
+
+float	getMouseScrollY()
+{
+	return (window->mouseScroll[1]);
 }
 
 static bool	openWindow(t_windowInfo *window)
@@ -203,7 +215,7 @@ void	keyCallBack(GLFWwindow *windowData, int key, int scancode, int action, int 
 	(void)windowData;
 	(void)scancode;
 	(void)mods;
-	if (action == GLFW_PRESS || action == GLFW_REPEAT)
+	if (action == GLFW_PRESS || (action == GLFW_REPEAT && window->keysSates[key]))
 		window->keysSates[key] = true;
 	else
 		window->keysSates[key] = false;
@@ -217,6 +229,13 @@ void	mouseCallBack(GLFWwindow *windowData, int button, int action, int mods)
 		window->mouseSates[button] = true;
 	else
 		window->mouseSates[button] = false;
+}
+
+void	mouseScrollCallBack(GLFWwindow *windowData, double xoffset, double yoffset)
+{
+	(void)windowData;
+	window->mouseScroll[0] = xoffset;
+	window->mouseScroll[1] = yoffset;
 }
 
 void	focusCallBack(GLFWwindow *windowData, int focused)
@@ -236,6 +255,7 @@ static void	setupWindow(t_windowInfo *window)
 	glfwSetFramebufferSizeCallback(window->windowData, resizeCallBack);
 	glfwSetKeyCallback(window->windowData, keyCallBack);
 	glfwSetMouseButtonCallback(window->windowData, mouseCallBack);
+	glfwSetScrollCallback(window->windowData, mouseScrollCallBack);
 	glfwSetWindowFocusCallback(window->windowData, focusCallBack);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);

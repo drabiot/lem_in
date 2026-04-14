@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/14 12:59:59 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 14:00:04 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,8 +156,8 @@ int	main(void)
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
-		setGuiTextf(camPos, "pos: %.2f; %.2f; %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
-		setGuiTextf(camAng, "cam: %.2f; %.2f", window->camera->yaw, window->camera->pitch);
+		setGuiTextf(camPos, "pos: x: %.2f; y: %.2f; z: %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
+		setGuiTextf(camAng, "cam: %.2f; %.2f, speed: %d", window->camera->yaw, window->camera->pitch, (int)window->camera->speed);
 		fitGuiToText(camPos, 1);
 		fitGuiToText(camAng, 1);
 
