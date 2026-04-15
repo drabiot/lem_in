@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 13:16:29 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/14 13:16:29 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/15 17:31:57 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <cglm/cglm.h>
 
 # define FOV 1.396263 // 80 degree in radians
-# define DefaultSpeed 30.f
+# define DefaultSpeed 100.f
 # define SENSI 40.f
 # define FarPlane 1000.f
 # define WorldUp (vec3){0, 1, 0}

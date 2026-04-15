@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 21:44:20 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/15 14:17:03 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/15 17:27:39 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,17 +202,17 @@ void	fitGuiToText(t_guiElement *elem, float ratio)
 		elem->size[1] = 10;
 }
 
-static t_guiElement	**incrButtonsList(t_guiElement **list, t_guiElement *nButton)
-{
-	t_guiElement	**nList;
-	int				i;
+// static t_guiElement	**incrButtonsList(t_guiElement **list, t_guiElement *nButton)
+// {
+// 	t_guiElement	**nList;
+// 	int				i;
 
-	i = 0;
-	while (list && list[i])
-		i ++;
-	nList = malloc(sizeof(*nList) * (i + 2));
-	/////////////////////////////////////////// !!!!!!!!!!!!!!!!!!! TODO
-}
+// 	i = 0;
+// 	while (list && list[i])
+// 		i ++;
+// 	nList = malloc(sizeof(*nList) * (i + 2));
+// 	/////////////////////////////////////////// !!!!!!!!!!!!!!!!!!! TODO
+// }
 
 void	makeButton(t_guiElement *elem, void *func)
 {
