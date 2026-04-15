@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 21:41:49 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/13 17:54:25 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 14:52:00 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ typedef struct	s_guiElement
 	vec3		color;
 	int			itextLen;
 	bool		isClickable;
-	void		*action;
+	int			buttonID;
+	void		(*action)(void);
 }				t_guiElement;
 
 void	initGui();
@@ -62,5 +63,10 @@ void	setGuiSize(t_guiElement *elem, vec2 nsize);
 void	setGuiScale(t_guiElement *elem, float nscale);
 void	setGuiText(t_guiElement *elem, char *ntext);
 void	setGuiTextf(t_guiElement *elem, char *format, ...);
+void	setGuiColor(t_guiElement *elem, vec3 color);
 void	fitGuiToText(t_guiElement *elem, float ratio);
+
+void	makeButton(t_guiElement *elem, void *func);
+void	doAction(t_guiElement *elem);
+
 #endif

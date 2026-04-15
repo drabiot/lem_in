@@ -6,33 +6,17 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 21:44:20 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/13 17:57:59 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/15 14:17:03 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <gui.h>
 #include <openGLMagic.h>
 
-/* 
-typedef struct	s_guiElement
-{
-	GLuint		VAO;
-	GLuint		VBO;
-	vec2		pos;
-	vec2		size;
-	mat4		model;
-	t_texture	*texture;
-	char		*text;
-	int			*itext;
-	vec3		color;
-	bool		isClickable;
-	void		*action;
-}				t_guiElement;
- */
-
-
-t_texture	*font = NULL;
-shaderID	fontShader = 0;
+t_texture		*font = NULL;
+shaderID		fontShader = 0;
+t_guiElement	**buttons = NULL;;
+int				buttonID = 0;
 
 void	initGui()
 {
@@ -42,6 +26,10 @@ void	initGui()
 	fontShader = createShader(DefaultFontShaderVertPath, DefaultFontShaderFragPath);
 	if (!fontShader)
 		printf(RED"font shader failed for gui init\n"BASE_COLOR);
+	buttons = malloc(sizeof(*buttons));
+	if (!buttons)
+		return ;
+	buttons[0] = NULL;
 }
 
 void	terminateGui()
@@ -51,6 +39,8 @@ void	terminateGui()
 	deleteTexture(font);
 	if (fontShader)
 		deleteShader(fontShader);
+	if (buttons)
+		free(buttons);
 }
 
 t_guiElement	*createGuiElement()
@@ -193,6 +183,11 @@ void	setGuiTextf(t_guiElement *elem, char *format, ...)
 	}
 }
 
+void	setGuiColor(t_guiElement *elem, vec3 color)
+{
+	glm_vec3_add(GLM_VEC3_ZERO, color, elem->color);
+}
+
 void	fitGuiToText(t_guiElement *elem, float ratio)
 {
 	float	textSize;
@@ -205,4 +200,27 @@ void	fitGuiToText(t_guiElement *elem, float ratio)
 		elem->size[0] += 10;
 	if (ratio == 1)
 		elem->size[1] = 10;
+}
+
+static t_guiElement	**incrButtonsList(t_guiElement **list, t_guiElement *nButton)
+{
+	t_guiElement	**nList;
+	int				i;
+
+	i = 0;
+	while (list && list[i])
+		i ++;
+	nList = malloc(sizeof(*nList) * (i + 2));
+	/////////////////////////////////////////// !!!!!!!!!!!!!!!!!!! TODO
+}
+
+void	makeButton(t_guiElement *elem, void *func)
+{
+	elem->isClickable = true;
+	elem->action = func;
+}
+
+void	doAction(t_guiElement *elem)
+{
+	elem->action();
 }

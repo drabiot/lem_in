@@ -54,10 +54,7 @@ void main()
 {
 	FUV = fract(UV) / fontSize;
 	int[3] ttest = int[3](int(charA), int(charA), int(charA));
-	// FragColor = texture(font, getPos(ttest[int(floor(UV.x))]) + FUV);
+	
 	FragColor = texture(font, getPos(text[int(floor(UV.x) + floor(realSize.y - UV.y) * realSize.x)]) + FUV);
 	FragColor = vec4(color * FragColor.rgb, FragColor.r);
-
-	//FragColor = vec4(getPos(ttest[int(floor(UV.x))]).x, getPos(ttest[int(floor(UV.x))]).y, 0, 1);
-	//FragColor = vec4(getPos(text[int(floor(UV.x))]).x, getPos(text[int(floor(UV.x))]).y, 0, 1);
 }

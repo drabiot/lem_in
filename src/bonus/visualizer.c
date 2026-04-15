@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/14 14:00:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/14 14:47:36 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ unsigned int indices[] = {  // note that we start from 0!
     1, 2, 3    // second triangle
 };
 
+void	testFunc()
+{
+	printf("oi\n");
+}
+
 int	main(void)
 {
 	launchOpenGL();
@@ -83,6 +88,12 @@ int	main(void)
 
 	t_guiElement	*camPos = createGuiElement();
 	t_guiElement	*camAng = createGuiElement();
+	t_guiElement	*buttonTest = createGuiElement();
+	makeButton(buttonTest, testFunc);
+	setGuiText(buttonTest, "ooooo");
+	fitGuiToText(buttonTest, 1);
+	setGuiScale(buttonTest, 11);
+
 	setGuiScale(camPos, 12);
 	setGuiPos(camPos, (vec2){-1, 0.76});
 	setGuiScale(camAng, 12);
@@ -163,7 +174,11 @@ int	main(void)
 
 		drawGui(camPos);
 		drawGui(camAng);
+		drawGui(buttonTest);
 
+
+		if (isMousePressed(GLFW_MOUSE_BUTTON_LEFT))
+			doAction(buttonTest);
 
 		if (window->lockMouse)
 			updateCam(window->camera);
