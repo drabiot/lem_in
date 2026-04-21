@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   visualizer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/21 13:30:44 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/21 13:44:28 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 
 t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate);
-void		drawTunnel(t_tunnel *tunnel);
+void		drawTunnel(t_tunnel *tunnel, shaderID shader);
 void		computeTunnelModel(vec3 posA, vec3 posB, mat4 model);
 
 vec3		otherCamPos = {0, 200, 0};
@@ -127,6 +127,13 @@ int	main(void)
 	fitGuiToText(switchCamBtn, 1);
 	makeButton(switchCamBtn, switchCam);
 
+	shaderID	shader; 
+	
+	shader = createShader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+	// LEAK?
+	if (!shader)
+		return (1);
+
 
 	t_tunnel	*tunnels;
 	int			i;
@@ -194,7 +201,7 @@ int	main(void)
 		i = 0;
 		while (i < nbTunnels)
 		{
-			drawTunnel(&tunnels[i]);
+			drawTunnel(&tunnels[i], shader);
 			++i;
 		}
 
@@ -215,7 +222,7 @@ int	main(void)
 		endFrame();
 	}
 	terminateGui();
-	deleteShader(tunnels->shader);
+	deleteShader(shader);
 	glfwTerminate();
 	
 	return (0);
@@ -329,9 +336,6 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)(vector_size(indices) * sizeof(int)), indices, GL_STATIC_DRAW);
 
 	tunnel.indexCount = (int)vector_size(indices);
-	tunnel.shader = createShader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
-	//if (!tunnel.shader)
-	//	return (NULL);
 
 	glBindVertexArray(0);
 
@@ -343,16 +347,16 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 	return (tunnel);
 }
 
-void	drawTunnel(t_tunnel *tunnel)
+void	drawTunnel(t_tunnel *tunnel, shaderID shader)
 {
 	mat4	model;
 	computeTunnelModel(tunnel->posA, tunnel->posB, model);
 
-	bindShader(tunnel->shader);
-	setMat4(tunnel->shader, "view",  getView(window->camera));
-    setMat4(tunnel->shader, "proj",  getProj(window->camera));
-    setMat4(tunnel->shader, "model", model);
-    //useTexture(tunnel->texture, tunnel->shader, "tex", 0);
+	bindShader(shader);
+	setMat4(shader, "view",  getView(window->camera));
+    setMat4(shader, "proj",  getProj(window->camera));
+    setMat4(shader, "model", model);
+    //useTexture(tunnel->texture, shader, "tex", 0);
 
     glBindVertexArray(tunnel->VAO);
     glDrawElements(GL_TRIANGLES, tunnel->indexCount, GL_UNSIGNED_INT, 0);

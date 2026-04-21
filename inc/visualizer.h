@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   visualizer.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 23:49:24 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/14 13:35:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/21 13:40:24 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ typedef struct s_tunnel
 	unsigned int	VBO;
 	unsigned int	EBO;
 	int				indexCount;
-	shaderID		shader;
 	t_texture		*texture;
 }					t_tunnel;
 

@@ -16,6 +16,6 @@ uniform sampler2D	tex;
 void	main()
 {
     gl_Position = proj * view * model * vec4(aPos, 1.0);
-    Color = aColor;
+    Color = vec3(abs(aPos.x), abs(aPos.y), abs(aPos.z));
     Uv = aUv;
 }
