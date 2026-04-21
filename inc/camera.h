@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 13:16:29 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/15 17:31:57 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/20 18:11:07 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define SENSI 40.f
 # define FarPlane 1000.f
 # define WorldUp (vec3){0, 1, 0}
+# define Min2DHeight 100
 
 typedef struct s_camera
 {
@@ -45,6 +46,6 @@ void	*getView(t_camera *camera);
 void	*getProj(t_camera *camera);
 void	*getProj2D(t_camera *camera);
 
-void	updateCam(t_camera *camera);
+void	updateCam(t_camera *camera, bool takeInput);
 
 #endif

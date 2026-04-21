@@ -8,7 +8,6 @@ layout (location = 1) in vec2	aUv;
 uniform vec2	size;
 uniform vec2	pos;
 uniform float	scale;
-uniform vec2	fontSize;
 uniform vec2	aspect;
 
 out vec2		UV;

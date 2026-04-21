@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 13:16:18 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/15 17:31:38 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/21 13:25:28 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,18 @@ static void	updateMatrices(t_camera *camera)
 	glm_ortho(0., window->width, 0, window->height, 0.1f, 100, camera->proj2D);
 }
 
-void	updateCam(t_camera *camera)
+void	updateCam(t_camera *camera, bool takeInput)
 {
 	// updating camera orientation
-	camera->yaw = fmodf(camera->yaw + SENSI
-		* (getMousePosX() - (getWindowW() / 2.))
-		/ getWindowW(), 360);
-	setClampVal(&camera->pitch, camera->pitch - SENSI
-		* (getMousePosY() - (getWindowH() / 2.))
-		/ getWindowH(), -89, 89);
+	if (takeInput && !window->is2Dcam)
+	{
+		camera->yaw = fmodf(camera->yaw + SENSI
+			* (getMousePosX() - (getWindowW() / 2.))
+			/ getWindowW(), 360);
+		setClampVal(&camera->pitch, camera->pitch - SENSI
+			* (getMousePosY() - (getWindowH() / 2.))
+			/ getWindowH(), -89, 89);
+	}
 	camera->dir[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
 	camera->dir[1] = sin(glm_rad(camera->pitch));
 	camera->dir[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
@@ -90,18 +93,27 @@ void	updateCam(t_camera *camera)
 	if (camera->speed + speedChange > 100)
 		speedChange *= 10;
 	setClampVal(&camera->speed, camera->speed + speedChange, 10, 5000);
-	if (isKeyRepeated(GLFW_KEY_W))
-		glm_vec3_muladds(camera->dir, -camera->speed * window->deltaTime, camera->pos);
-	if (isKeyRepeated(GLFW_KEY_S))
-		glm_vec3_muladds(camera->dir, camera->speed * window->deltaTime, camera->pos);
-	if (isKeyRepeated(GLFW_KEY_A))
-		glm_vec3_muladds(camera->right, camera->speed * window->deltaTime, camera->pos);
-	if (isKeyRepeated(GLFW_KEY_D))
-		glm_vec3_muladds(camera->right, -camera->speed * window->deltaTime, camera->pos);
-	if (isKeyRepeated(GLFW_KEY_SPACE))
-		glm_vec3_muladds(WorldUp, -camera->speed * window->deltaTime, camera->pos);
-	if (isKeyRepeated(GLFW_KEY_LEFT_SHIFT))
-		glm_vec3_muladds(WorldUp, camera->speed * window->deltaTime, camera->pos);
+	if (takeInput)
+	{
+		if (isKeyRepeated(GLFW_KEY_W) && !window->is2Dcam)
+			glm_vec3_muladds(camera->dir, -camera->speed * window->deltaTime, camera->pos);
+		if (isKeyRepeated(GLFW_KEY_S) && !window->is2Dcam)
+			glm_vec3_muladds(camera->dir, camera->speed * window->deltaTime, camera->pos);
+		if (isKeyRepeated(GLFW_KEY_A))
+			glm_vec3_muladds(camera->right, camera->speed * window->deltaTime, camera->pos);
+		if (isKeyRepeated(GLFW_KEY_D))
+			glm_vec3_muladds(camera->right, -camera->speed * window->deltaTime, camera->pos);
+		if (isKeyRepeated(GLFW_KEY_SPACE))
+			glm_vec3_muladds(WorldUp, -camera->speed * window->deltaTime, camera->pos);
+		if (isKeyRepeated(GLFW_KEY_LEFT_SHIFT))
+			glm_vec3_muladds(WorldUp, camera->speed * window->deltaTime, camera->pos);
+		if (isKeyRepeated(GLFW_KEY_W) && window->is2Dcam)
+			glm_vec3_muladds((vec3){1, 0, 0}, -camera->speed * window->deltaTime, camera->pos);
+		if (isKeyRepeated(GLFW_KEY_S) && window->is2Dcam)
+			glm_vec3_muladds((vec3){1, 0, 0}, camera->speed * window->deltaTime, camera->pos);
+	}
+	if (window->is2Dcam)
+		setClampVal(&camera->pos[1], camera->pos[1], Min2DHeight, FarPlane);
 	// now we update the matrices with everything
 	updateMatrices(camera);
 }

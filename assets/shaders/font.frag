@@ -29,24 +29,22 @@ uniform int[128]	text;
 vec2	FUV;
 
 
-vec2	getPos(float char)
+vec2	getPos(float Char)
 {
-	// return (vec2(0, 0));
-
-	if (char == charSpace)
+	if (Char == charSpace)
 		return (vec2(0, 0));
-	if (char == charComa || char == charDot)
+	if (Char == charComa || Char == charDot)
 		return (vec2(1. / fontSize.x, 0));
-	if (char == charMinus)
+	if (Char == charMinus)
 		return (vec2(2. / fontSize.x, 0));
 
-	if (char >= char0 && char <= charSemicol)
-		return (vec2((char - char0 + 3.) / fontSize.x, 0));
+	if (Char >= char0 && Char <= charSemicol)
+		return (vec2((Char - char0 + 3.) / fontSize.x, 0));
 
-	if (char >= charCapA && char <= charCapZ)
-		return (vec2((char - charCapA) / fontSize.x, 1 / fontSize.y));
-	if (char >= charA && char <= charZ)
-		return (vec2((char - charA) / fontSize.x, 1 / fontSize.y));
+	if (Char >= charCapA && Char <= charCapZ)
+		return (vec2((Char - charCapA) / fontSize.x, 1 / fontSize.y));
+	if (Char >= charA && Char <= charZ)
+		return (vec2((Char - charA) / fontSize.x, 1 / fontSize.y));
 	return (vec2(1, 0));
 }
 

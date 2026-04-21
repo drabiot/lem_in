@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/15 17:27:23 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/20 18:20:51 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 void		drawTunnel(t_tunnel *tunnel);
 void		computeTunnelModel(vec3 posA, vec3 posB, mat4 model);
 
+vec3		otherCamPos = {0, 200, 0};
+vec2		otherCamAngle = {0, -89};
 
 void	freeFarm(t_AntFarm *farm)
 {
@@ -65,6 +67,32 @@ void	computeDistToEnd(t_room *room, int distToEnd)
 	}
 }
 
+void	switchCam(t_guiElement *elem)
+{
+	vec3	tpPos;
+	vec2	tpAng;
+
+	glm_vec3_add(GLM_VEC3_ZERO, window->camera->pos, tpPos);
+	glm_vec3_add(GLM_VEC3_ZERO, otherCamPos, window->camera->pos);
+	glm_vec3_add(GLM_VEC3_ZERO, tpPos, otherCamPos);
+	tpAng[0] = window->camera->yaw;
+	tpAng[1] = window->camera->pitch;
+	window->camera->yaw = otherCamAngle[0];
+	window->camera->pitch = otherCamAngle[1];
+	otherCamAngle[0] = tpAng[0];
+	otherCamAngle[1] = tpAng[1];
+	updateCam(window->camera, false);
+
+	printf("oi %d\n", window->is2Dcam);
+	if (!window->is2Dcam)
+		setGuiText(elem, "3D Cam", true);
+	else
+		setGuiText(elem, "2D Cam", true);
+	window->is2Dcam = !window->is2Dcam;
+	printf("oi %d\n", window->is2Dcam);
+	fitGuiToText(elem, 1);
+}
+
 int	main(void)
 {
 	//Parsing
@@ -87,12 +115,19 @@ int	main(void)
 	launchOpenGL();
 
 	initGui();
-	t_guiElement	*camPos = createGuiElement();
-	t_guiElement	*camAng = createGuiElement();
-	setGuiScale(camPos, 12);
-	setGuiPos(camPos, (vec2){-1, 0.76});
-	setGuiScale(camAng, 12);
-	setGuiPos(camAng, (vec2){-1, 0.86});
+	t_guiElement	*camPosBtn = createGuiElement();
+	t_guiElement	*camAngBtn = createGuiElement();
+	t_guiElement	*switchCamBtn = createGuiElement();
+	setGuiScale(camPosBtn, 12);
+	setGuiPos(camPosBtn, (vec2){-1, 0.76});
+	setGuiScale(camAngBtn, 12);
+	setGuiPos(camAngBtn, (vec2){-1, 0.86});
+
+	setGuiScale(switchCamBtn, 12);
+	setGuiPos(switchCamBtn, (vec2){-1, 0.3});
+	setGuiText(switchCamBtn, "2D Cam", true);
+	fitGuiToText(switchCamBtn, 1);
+	makeButton(switchCamBtn, switchCam);
 
 
 	t_tunnel	*tunnels;
@@ -145,7 +180,7 @@ int	main(void)
 		if (isKeyPressed(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
 
-		if (isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE))
+		if (isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE) && !window->is2Dcam)
 		{
 			window->lockMouse = !window->lockMouse;
 			if (window->lockMouse)
@@ -165,15 +200,19 @@ int	main(void)
 			++i;
 		}
 
-		setGuiTextf(camPos, "pos: x: %.2f; y: %.2f; z: %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
-		setGuiTextf(camAng, "cam: %.2f; %.2f, speed: %d", window->camera->yaw, window->camera->pitch, (int)window->camera->speed);
-		fitGuiToText(camPos, 1);
-		fitGuiToText(camAng, 1);
-		drawGui(camPos);
-		drawGui(camAng);
+		setGuiTextf(camPosBtn, "pos: x: %.2f; y: %.2f; z: %.2f", window->camera->pos[0], window->camera->pos[1], window->camera->pos[2]);
+		setGuiTextf(camAngBtn, "cam: %.2f; %.2f, speed: %d", window->camera->yaw, window->camera->pitch, (int)window->camera->speed);
+		fitGuiToText(camPosBtn, 1);
+		fitGuiToText(camAngBtn, 1);
+		drawGui(camPosBtn);
+		drawGui(camAngBtn);
+		drawGui(switchCamBtn);
 
-		if (window->lockMouse)
-       		updateCam(window->camera);
+
+		if (window->lockMouse || window->is2Dcam)
+       		updateCam(window->camera, true);
+		if (!window->lockMouse && isMousePressed(GLFW_MOUSE_BUTTON_LEFT))
+			checkButtons();
 
 		endFrame();
 	}

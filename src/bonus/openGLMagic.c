@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 17:17:36 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/15 13:37:48 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/20 18:24:01 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ t_windowInfo	*launchOpenGL(void)
 	window->camera = createCam(GLM_VEC3_ZERO, 90, 0);
 	openWindow(window);
 	window->camera->aspectRatio = window->width / window->height;
-	updateCam(window->camera);
+	updateCam(window->camera, true);
+	window->is2Dcam = false;
 	return (window);
 }
 
@@ -66,10 +67,21 @@ void	refreshMouse()
 
 void	endFrame()
 {
+	static vec2	pastMousePos;
+	vec2		mousePos;
+
 	refreshMouse();
 	glfwSwapBuffers(window->windowData);
 	
 	glm_vec2_zero(window->mouseScroll);
+
+	mousePos[0] = window->mousePos[0];
+	mousePos[1] = window->mousePos[1];
+	if (window->is2Dcam)
+		glm_vec2_sub(mousePos, pastMousePos, window->mouseDelta);
+	else
+		glm_vec2_zero(window->mouseDelta);
+	glm_vec2_add(GLM_VEC2_ZERO, mousePos, pastMousePos);
 
 	window->deltaTime = window->pastTime - glfwGetTime();
 
@@ -199,6 +211,7 @@ static void	opengErrorMsg(GLenum source, GLenum type, GLuint id, GLenum severity
 	else
 		write(2, "NO TYPE; ", 10);
 	write(2, message, ft_strlen((char *)message));
+	write(2, BASE_COLOR"\n", 1 + ft_strlen(BASE_COLOR));
 }
 
 static void	resizeCallBack(GLFWwindow *windowData, int width, int height)

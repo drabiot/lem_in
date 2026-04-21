@@ -11,6 +11,8 @@ uniform mat4	model;
 out vec3	Color;
 out vec2	Uv;
 
+uniform sampler2D	tex;
+
 void	main()
 {
     gl_Position = proj * view * model * vec4(aPos, 1.0);

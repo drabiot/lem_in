@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 17:17:57 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/14 13:51:06 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/20 18:21:16 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct	s_windowInfo
 	int			height;
 	char		*name;
 	double		mousePos[2];
+	vec2		mouseDelta;
 	bool		keysSates[Max_Keys];
 	bool		mouseSates[Max_Mouse_Keys];
 	vec2		mouseScroll;
@@ -44,6 +45,7 @@ typedef struct	s_windowInfo
 	float		pastTime;
 	float		deltaTime;
 	t_camera	*camera;
+	bool		is2Dcam;
 }				t_windowInfo;
 
 extern t_windowInfo	*window;

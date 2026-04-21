@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 21:44:20 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/15 17:27:39 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/20 17:54:35 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,39 @@
 
 t_texture		*font = NULL;
 shaderID		fontShader = 0;
+shaderID		btnShader = 0;
 t_guiElement	**buttons = NULL;;
 int				buttonID = 0;
+GLuint			buttonFrameBuffer = 0;
+GLuint			buttonSelectTexture = 0;
+GLuint			buttonRenderBuffer = 0;
 
-void	initGui()
+bool	initGui()
 {
 	font = loadTexture(DefaultFontPath);
 	if (!font)
-		printf(RED"font texture failed for gui init\n"BASE_COLOR);
+		return (false);
 	fontShader = createShader(DefaultFontShaderVertPath, DefaultFontShaderFragPath);
 	if (!fontShader)
-		printf(RED"font shader failed for gui init\n"BASE_COLOR);
-	buttons = malloc(sizeof(*buttons));
-	if (!buttons)
-		return ;
-	buttons[0] = NULL;
+		return (false);
+	btnShader = createShader(DefaultFontShaderVertPath, DefaultSelectShaderFragPath);
+	if (!btnShader)
+		return (false);
+	glGenFramebuffers(1, &buttonFrameBuffer);
+	glGenTextures(1, &buttonSelectTexture);
+	glBindFramebuffer(GL_FRAMEBUFFER, buttonFrameBuffer);
+	glBindTexture(GL_TEXTURE_2D, buttonSelectTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ButtonBufferWidth, ButtonBufferHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, buttonSelectTexture, 0);
+	glGenRenderbuffers(1, &buttonRenderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, buttonRenderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, ButtonBufferWidth, ButtonBufferHeight);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, buttonRenderBuffer);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		return (false);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return (true);
 }
 
 void	terminateGui()
@@ -39,8 +57,16 @@ void	terminateGui()
 	deleteTexture(font);
 	if (fontShader)
 		deleteShader(fontShader);
+	if (btnShader)
+		deleteShader(btnShader);
 	if (buttons)
 		free(buttons);
+	if (buttonFrameBuffer)
+		glDeleteFramebuffers(1, &buttonFrameBuffer);
+	if (buttonRenderBuffer)
+		glDeleteRenderbuffers(1, &buttonRenderBuffer);
+	if (buttonSelectTexture)
+		glDeleteTextures(1, &buttonSelectTexture);
 }
 
 t_guiElement	*createGuiElement()
@@ -69,7 +95,9 @@ t_guiElement	*createGuiElement()
 	elem->itext = malloc(sizeof(*elem->itext) * 128);
 	glm_vec3_one(elem->color);
 	elem->itextLen = 0;
+	elem->isButton = false;
 	elem->isClickable = false;
+	elem->buttonID = -1;
 	elem->action = NULL;
 	return (elem);
 }
@@ -133,7 +161,7 @@ void	setGuiScale(t_guiElement *elem, float nscale)
 	elem->scale = nscale;
 }
 
-void	setGuiText(t_guiElement *elem, char *ntext)
+void	setGuiText(t_guiElement *elem, char *ntext, bool dup)
 {
 	int	i;
 	
@@ -141,7 +169,10 @@ void	setGuiText(t_guiElement *elem, char *ntext)
 		return ;
 	if (elem->text)
 		free(elem->text);
-	elem->text = ntext;
+	if (dup)
+		elem->text = ft_strdup(ntext);
+	else
+		elem->text = ntext;
 	elem->itextLen = ft_strlen(elem->text);
 	i = 0;
 	while (i < 128)
@@ -202,25 +233,90 @@ void	fitGuiToText(t_guiElement *elem, float ratio)
 		elem->size[1] = 10;
 }
 
-// static t_guiElement	**incrButtonsList(t_guiElement **list, t_guiElement *nButton)
-// {
-// 	t_guiElement	**nList;
-// 	int				i;
+static void	incrButtonsList(t_guiElement *nButton)
+{
+	t_guiElement	**nList;
+	int				i;
 
-// 	i = 0;
-// 	while (list && list[i])
-// 		i ++;
-// 	nList = malloc(sizeof(*nList) * (i + 2));
-// 	/////////////////////////////////////////// !!!!!!!!!!!!!!!!!!! TODO
-// }
+	i = 0;
+	while (buttons && buttons[i])
+		i ++;
+	nList = ft_calloc(sizeof(*nList), (i + 2));
+	i = 0;
+	while (buttons && buttons[i])
+	{
+		nList[i] = buttons[i];
+		i ++;
+	}
+	nList[i] = nButton;
+	nList[i + 1] = NULL;
+	free(buttons);
+	buttons = nList;
+}
 
 void	makeButton(t_guiElement *elem, void *func)
 {
+	if (!elem)
+		return ;
+
+	elem->isButton = true;
 	elem->isClickable = true;
 	elem->action = func;
+	elem->buttonID = buttonID ++;
+	incrButtonsList(elem);
 }
 
 void	doAction(t_guiElement *elem)
 {
-	elem->action();
+	elem->action(elem);
+}
+
+void	setButtonStatus(t_guiElement *elem, bool status)
+{
+	if (elem && elem->isButton)
+		elem->isClickable = status;
+}
+
+void	checkButtons()
+{
+	int				i;
+	unsigned char	data[3];
+	
+	bindShader(btnShader);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, buttonFrameBuffer);
+	glBindTexture(GL_TEXTURE_2D, buttonSelectTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window->width, window->height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	
+	glBindRenderbuffer(GL_RENDERBUFFER, buttonRenderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window->width, window->height);
+
+	glClearColor(0.0f, 0.0, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	i = -1;
+	while (buttons[++i])
+	{
+		if (!buttons[i]->isClickable)
+			continue;
+
+		glDisable(GL_DEPTH_TEST);
+		setVec3(btnShader, "color", (vec3){(float)(buttons[i]->buttonID + 1) / 255.f, 0, 0});
+		setFloat(btnShader, "scale", buttons[i]->scale);
+		setVec2(btnShader, "size", buttons[i]->size);
+		setVec2(btnShader, "pos", buttons[i]->pos);
+		setVec2(btnShader, "aspect", (vec2){window->width, window->height});
+
+		glBindVertexArray(buttons[i]->VAO);
+		glDrawArrays(GL_TRIANGLES, 0, sizeof(DefaultRect));
+	}
+
+	glReadPixels(getMousePosX(), window->height - getMousePosY(), 1, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	if (data[0] && data[0] <= buttonID)
+		doAction(buttons[data[0] - 1]);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	bindShader(0);
+	glEnable(GL_DEPTH_TEST);
 }
