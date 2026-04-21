@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/20 18:20:51 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/21 13:30:44 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,11 @@ void	switchCam(t_guiElement *elem)
 	otherCamAngle[1] = tpAng[1];
 	updateCam(window->camera, false);
 
-	printf("oi %d\n", window->is2Dcam);
 	if (!window->is2Dcam)
 		setGuiText(elem, "3D Cam", true);
 	else
 		setGuiText(elem, "2D Cam", true);
 	window->is2Dcam = !window->is2Dcam;
-	printf("oi %d\n", window->is2Dcam);
 	fitGuiToText(elem, 1);
 }
 
