@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/20 18:20:51 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/21 13:56:25 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,14 +319,27 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 	buildVerticesSmooth(length, 12, &vertices, &normals, &texCoords, &indices, radius);
 	
 	glGenVertexArrays(1, &tunnel.VAO);
-	glGenBuffers(1, &tunnel.VBO);
 	glGenBuffers(1, &tunnel.EBO);
 	glBindVertexArray(tunnel.VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, tunnel.VBO);
 
+	glGenBuffers(1, &tunnel.VVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, tunnel.VVBO);
 	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(vector_size(vertices) * sizeof(float)), vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glGenBuffers(1, &tunnel.NVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, tunnel.NVBO);
+	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(vector_size(normals) * sizeof(float)), normals, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+
+	glGenBuffers(1, &tunnel.UVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, tunnel.UVBO);
+	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(vector_size(texCoords) * sizeof(float)), texCoords, GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(2);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tunnel.EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)(vector_size(indices) * sizeof(int)), indices, GL_STATIC_DRAW);
 
