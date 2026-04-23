@@ -6,7 +6,7 @@
 /*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/21 14:00:25 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/23 19:29:47 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ int	main(void)
 	
 
 	launchOpenGL();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	initGui();
 	t_guiElement	*camPosBtn = createGuiElement();
@@ -257,7 +258,7 @@ vec_float getUnitCircleVertices(int	sectorCount)
 	return (unitCircleVertices);
 }
 
-void	buildVerticesSmooth(float length, int sectorCount, vec_float *vertices, vec_float *normals, vec_float *texCoords, vec_int *indices, float radius)
+void	buildVerticesSmooth(float length, int sectorCount, int stackCount, vec_float *vertices, vec_float *normals, vec_float *texCoords, vec_int *indices, float radius)
 {
 	vector_clear(*vertices);
 	vector_clear(*normals);
@@ -265,10 +266,10 @@ void	buildVerticesSmooth(float length, int sectorCount, vec_float *vertices, vec
 
 	vec_float	unitVertices = getUnitCircleVertices(sectorCount);
 
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i <= stackCount; ++i)
 	{
-		float	h = -length / 2.0f + (float)i * length;
-		float	t = 1.0f - (float)i;
+		float	t = (float)i / (float)stackCount;
+    	float	h = -length / 2.0f + t * length;
 
 		for (int j = 0, k = 0; j <= sectorCount; ++j, k += 3)
 		{
@@ -289,18 +290,21 @@ void	buildVerticesSmooth(float length, int sectorCount, vec_float *vertices, vec
 		}
 	}
 
-	int	k1 = 0;
-	int	k2 = sectorCount + 1;
-
-	for (int i = 0; i < sectorCount; ++i, ++k1, ++k2)
+	for (int i = 0; i < stackCount; ++i)
 	{
-		vector_add(indices, k1);
-		vector_add(indices, k1 + 1);
-		vector_add(indices, k2);
+		int k1 = i * (sectorCount + 1);
+		int k2 = k1 + sectorCount + 1;
 
-		vector_add(indices, k2);
-		vector_add(indices, k1 + 1);
-		vector_add(indices, k2 + 1);
+		for (int j = 0; j < sectorCount; ++j, ++k1, ++k2)
+		{
+			vector_add(indices, k1);
+			vector_add(indices, k1 + 1);
+			vector_add(indices, k2);
+
+			vector_add(indices, k2);
+			vector_add(indices, k1 + 1);
+			vector_add(indices, k2 + 1);
+		}
 	}
 }
 
@@ -321,7 +325,7 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 	vec_float	texCoords = vector_create();
 	vec_int		indices = vector_create();
 
-	buildVerticesSmooth(length, 12, &vertices, &normals, &texCoords, &indices, radius);
+	buildVerticesSmooth(length, 12, 100, &vertices, &normals, &texCoords, &indices, radius);
 	
 	glGenVertexArrays(1, &tunnel.VAO);
 	glGenBuffers(1, &tunnel.EBO);
