@@ -180,10 +180,13 @@ void	main()
     Uv = aUv;
     Normal = normalize(abs(aNormal));
 
-	noise = 10.0 * -.10 * turbulence(.5 * aNormal);
-	float	b = 5.0 * pnoise(0.05 * aPos, vec3(1.0));
-	float	displacement = -10. * noise + b;
+	float	amplitude = 0.3;
+	float	frequence = 0.8;
 
-	vec3 newPosition = aPos + aNormal + displacement;
-    gl_Position = proj * view * model * vec4(aPos, 1.0);
+	float	noise = turbulence(frequence * aPos);
+	float	detail = 5.0 * pnoise(0.5 * aPos, vec3(10.0, 10.0, 10.0));
+	float	displacement = (noise + (detail * 0.5)) * amplitude;
+
+	vec3 newPosition = aPos + (aNormal * displacement);
+    gl_Position = proj * view * model * vec4(newPosition, 1.0);
 }
