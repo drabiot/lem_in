@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   visualizer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/23 19:32:01 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/24 13:42:18 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ int	main(void)
 	
 
 	launchOpenGL();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	initGui();
 	t_guiElement	*camPosBtn = createGuiElement();
@@ -186,7 +185,7 @@ int	main(void)
 		if (isKeyPressed(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
 
-		if (isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE) && !window->is2Dcam)
+		if (!window->is2Dcam && isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE))
 		{
 			window->lockMouse = !window->lockMouse;
 			if (window->lockMouse)
@@ -198,6 +197,9 @@ int	main(void)
 			else
 				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
+
+		
+		bindShader(shader);
 
 		i = 0;
 		while (i < nbTunnels)
@@ -369,7 +371,6 @@ void	drawTunnel(t_tunnel *tunnel, shaderID shader)
 	mat4	model;
 	computeTunnelModel(tunnel->posA, tunnel->posB, model);
 
-	bindShader(shader);
 	setMat4(shader, "view",  getView(window->camera));
     setMat4(shader, "proj",  getProj(window->camera));
     setMat4(shader, "model", model);
