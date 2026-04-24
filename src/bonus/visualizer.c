@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   visualizer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/21 14:00:25 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/22 17:31:10 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ int	main(void)
 
 	launchOpenGL();
 
+	t_texture	*cat = loadTexture("assets/textures/cat.bmp");
+
 	initGui();
 	t_guiElement	*camPosBtn = createGuiElement();
 	t_guiElement	*camAngBtn = createGuiElement();
@@ -185,7 +187,7 @@ int	main(void)
 		if (isKeyPressed(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window->windowData, GLFW_TRUE);
 
-		if (isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE) && !window->is2Dcam)
+		if (!window->is2Dcam && isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE))
 		{
 			window->lockMouse = !window->lockMouse;
 			if (window->lockMouse)
@@ -197,6 +199,11 @@ int	main(void)
 			else
 				glfwSetInputMode(window->windowData, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
+
+		
+		bindShader(shader);
+
+		useTexture(cat, shader, "tex", 0);
 
 		i = 0;
 		while (i < nbTunnels)
@@ -223,6 +230,7 @@ int	main(void)
 	}
 	terminateGui();
 	deleteShader(shader);
+	deleteTexture(cat);
 	glfwTerminate();
 	
 	return (0);
@@ -365,7 +373,6 @@ void	drawTunnel(t_tunnel *tunnel, shaderID shader)
 	mat4	model;
 	computeTunnelModel(tunnel->posA, tunnel->posB, model);
 
-	bindShader(shader);
 	setMat4(shader, "view",  getView(window->camera));
     setMat4(shader, "proj",  getProj(window->camera));
     setMat4(shader, "model", model);

@@ -16,6 +16,6 @@ uniform sampler2D	tex;
 void	main()
 {
     Normal = normalize(abs(aNormal));
-    gl_Position = proj * view * model * vec4(aPos, 1.0);
     Uv = aUv;
+    gl_Position = proj * view * model * vec4(aPos, 1.0);
 }
