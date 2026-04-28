@@ -7,12 +7,13 @@ layout (location = 2) in vec2	aUv;
 uniform mat4	proj;
 uniform mat4	view;
 uniform mat4	model;
+uniform float	len;
 
 out vec3	Normal;
+out vec3	GPos;
 out vec2	Uv;
 out float	noise;
-
-uniform sampler2D	tex;
+out float	offset;
 
 vec3 mod289(vec3 x)
 {
@@ -189,4 +190,6 @@ void	main()
 
 	vec3 newPosition = aPos + (aNormal * displacement);
     gl_Position = proj * view * model * vec4(newPosition, 1.0);
+	offset = distance(gl_Position, (proj * view * model * vec4(aPos, 1.0)));
+	GPos = newPosition;
 }
