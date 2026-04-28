@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 13:16:18 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/24 13:01:25 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/24 18:20:38 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,8 @@ void	updateCam(t_camera *camera, bool takeInput)
 			glm_vec3_muladds((vec3){1, 0, 0}, camera->speed * window->deltaTime, camera->pos);
 		if (window->is2Dcam && isMouseRepeated(GLFW_MOUSE_BUTTON_MIDDLE))
 		{
-			glm_vec3_muladds((vec3){1, 0, 0}, -window->mouseDelta[1] * window->deltaTime * camera->pos[1] * 10.f, camera->pos);
-			glm_vec3_muladds(camera->right, window->mouseDelta[0] * window->deltaTime * camera->pos[1] * 10.f, camera->pos);
+			glm_vec3_muladds((vec3){1, 0, 0}, -window->mouseDelta[1] * window->deltaTime * camera->pos[1] / 10.f, camera->pos);
+			glm_vec3_muladds(camera->right, window->mouseDelta[0] * window->deltaTime * camera->pos[1] / 10.f, camera->pos);
 		}
 	}
 	if (window->is2Dcam)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   visualizer.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 23:49:24 by mbirou            #+#    #+#             */
-/*   Updated: 2026/04/21 14:00:00 by tchartie         ###   ########.fr       */
+/*   Updated: 2026/04/24 14:14:27 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef	int		*vec_int;
 
 typedef struct s_tunnel
 {
+	float			length;
 	vec3			posA;
 	vec3			posB;
 	unsigned int	VAO;

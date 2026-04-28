@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/24 13:42:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/24 14:15:32 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ int	main(void)
 
 	launchOpenGL();
 
+	t_texture	*cat = loadTexture("assets/textures/dirt.bmp");
+
 	initGui();
 	t_guiElement	*camPosBtn = createGuiElement();
 	t_guiElement	*camAngBtn = createGuiElement();
@@ -201,6 +203,8 @@ int	main(void)
 		
 		bindShader(shader);
 
+		useTexture(cat, shader, "tex", 0);
+
 		i = 0;
 		while (i < nbTunnels)
 		{
@@ -226,6 +230,7 @@ int	main(void)
 	}
 	terminateGui();
 	deleteShader(shader);
+	deleteTexture(cat);
 	glfwTerminate();
 	
 	return (0);
@@ -317,7 +322,7 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 	(void)rotate;
 
 	t_tunnel	tunnel = {0};
-	float 		length = glm_vec3_distance(posA, posB);
+	tunnel.length = glm_vec3_distance(posA, posB);
 
 	glm_vec3_copy(posA, tunnel.posA);
 	glm_vec3_copy(posB, tunnel.posB);
@@ -327,7 +332,7 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 	vec_float	texCoords = vector_create();
 	vec_int		indices = vector_create();
 
-	buildVerticesSmooth(length, 12, 100, &vertices, &normals, &texCoords, &indices, radius);
+	buildVerticesSmooth(tunnel.length, 12, 100, &vertices, &normals, &texCoords, &indices, radius);
 	
 	glGenVertexArrays(1, &tunnel.VAO);
 	glGenBuffers(1, &tunnel.EBO);
@@ -374,6 +379,7 @@ void	drawTunnel(t_tunnel *tunnel, shaderID shader)
 	setMat4(shader, "view",  getView(window->camera));
     setMat4(shader, "proj",  getProj(window->camera));
     setMat4(shader, "model", model);
+	setFloat(shader, "len", tunnel->length);
     //useTexture(tunnel->texture, shader, "tex", 0);
 
     glBindVertexArray(tunnel->VAO);
