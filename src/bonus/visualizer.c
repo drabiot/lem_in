@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   visualizer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tchartie <tchartie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 14:31:26 by tchartie          #+#    #+#             */
-/*   Updated: 2026/04/24 13:42:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2026/04/28 13:37:07 by tchartie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <visualizer.h>
 
 
-t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate);
+t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate, bool isRoom);
 void		drawTunnel(t_tunnel *tunnel, shaderID shader);
 void		computeTunnelModel(vec3 posA, vec3 posB, mat4 model);
 
@@ -162,6 +162,11 @@ int	main(void)
 	while (farm.room[i])
 	{
 		j = 0;
+		tunnels[nbTunnels] = createTunnel(3.5,
+			(vec3){farm.room[i]->posX * 20, -3, farm.room[i]->posY * 20},
+			(vec3){farm.room[i]->posX * 20, 3, farm.room[i]->posY * 20},
+			0, 0, true);
+		++nbTunnels;
 		while (farm.room[i]->neighbours[j])
 		{
 			if (farm.room[i]->neighbours[j]->isUsed == false)
@@ -169,7 +174,7 @@ int	main(void)
 				tunnels[nbTunnels] = createTunnel(3,
 					(vec3){farm.room[i]->posX * 20, 0, farm.room[i]->posY * 20},
 					(vec3){farm.room[i]->neighbours[j]->posX * 20, 0, farm.room[i]->neighbours[j]->posY * 20},
-					0, 0);
+					0, 0, false);
 				++nbTunnels;
 			}
 			++j;
@@ -260,7 +265,7 @@ vec_float getUnitCircleVertices(int	sectorCount)
 	return (unitCircleVertices);
 }
 
-void	buildVerticesSmooth(float length, int sectorCount, int stackCount, vec_float *vertices, vec_float *normals, vec_float *texCoords, vec_int *indices, float radius)
+void	buildVerticesSmooth(float length, int sectorCount, int stackCount, vec_float *vertices, vec_float *normals, vec_float *texCoords, vec_int *indices, float radius, bool isRoom)
 {
 	vector_clear(*vertices);
 	vector_clear(*normals);
@@ -271,7 +276,7 @@ void	buildVerticesSmooth(float length, int sectorCount, int stackCount, vec_floa
 	for (int i = 0; i <= stackCount; ++i)
 	{
 		float	t = (float)i / (float)stackCount;
-    	float	h = -length / 2.0f + t * length;
+		float	h = -length / 2.0f + t * length;
 
 		for (int j = 0, k = 0; j <= sectorCount; ++j, k += 3)
 		{
@@ -308,10 +313,73 @@ void	buildVerticesSmooth(float length, int sectorCount, int stackCount, vec_floa
 			vector_add(indices, k2 + 1);
 		}
 	}
+
+	if (!isRoom)
+		return ;
+
+	int	baseCenterIndex = (int)vector_size(*vertices) / 3;
+	int	topCenterIndex = baseCenterIndex + sectorCount + 1;
+
+	for (int i = 0; i < 2; ++i)
+	{
+		float	h = -length / 2.0f + (float)i * length;
+		float	nz = -1.0f + (float)i * 2.0f;
+
+		vector_add(vertices, 0);		vector_add(vertices, 0);		vector_add(vertices, h);
+		vector_add(normals, 0);			vector_add(normals, 0);			vector_add(normals, nz);
+		vector_add(texCoords, 0.5f);	vector_add(texCoords, 0.5f);
+
+		for (int j = 0, k = 0; j < sectorCount; ++j, k += 3)
+		{
+			float ux = unitVertices[k];
+			float uy = unitVertices[k+1];
+
+			vector_add(vertices, ux * radius);
+			vector_add(vertices, uy * radius);
+			vector_add(vertices, h);
+			vector_add(normals, ux);
+			vector_add(normals, uy);
+			vector_add(normals, 0);
+			vector_add(texCoords, -ux * 0.5f + 0.5f);
+			vector_add(texCoords, -uy * 0.5f + 0.5f);
+		}
+	}
+
+	for (int i = 0, k = baseCenterIndex + 1; i < sectorCount; ++i, ++k)
+	{
+		if (i < sectorCount - 1)
+		{
+			vector_add(indices, baseCenterIndex);
+			vector_add(indices, k + 1);
+			vector_add(indices, k);
+		}
+		else
+		{
+			vector_add(indices, baseCenterIndex);
+			vector_add(indices, baseCenterIndex + 1);
+			vector_add(indices, k);
+		}
+	}
+
+	for (int i = 0, k = topCenterIndex + 1; i < sectorCount; ++i, ++k)
+	{
+		if (i < sectorCount - 1)
+		{
+			vector_add(indices, topCenterIndex);
+			vector_add(indices, k);
+			vector_add(indices, k + 1);
+		}
+		else
+		{
+			vector_add(indices, topCenterIndex);
+			vector_add(indices, k);
+			vector_add(indices, topCenterIndex + 1);
+		}
+	}
 }
 
 
-t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate)
+t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rotate, bool isRoom)
 {
 	(void)angle;
 	(void)rotate;
@@ -327,7 +395,7 @@ t_tunnel	createTunnel(float radius, vec3 posA, vec3 posB, float angle, float rot
 	vec_float	texCoords = vector_create();
 	vec_int		indices = vector_create();
 
-	buildVerticesSmooth(length, 12, 100, &vertices, &normals, &texCoords, &indices, radius);
+	buildVerticesSmooth(length, 12, 100, &vertices, &normals, &texCoords, &indices, radius, isRoom);
 	
 	glGenVertexArrays(1, &tunnel.VAO);
 	glGenBuffers(1, &tunnel.EBO);
